@@ -11,6 +11,8 @@ export const PROTOTYPE_ROOM_CONFIG = {
     height: 2.5,
     thickness: 0.35,
     color: '#1b1020',
+    /** Extra length on each visual wall segment (± along its long axis) to seal mesh seams. */
+    visualOverlap: 0.08,
   },
   gate: {
     id: 'echo-gate',

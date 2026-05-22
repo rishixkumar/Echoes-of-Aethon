@@ -10,7 +10,7 @@ const { height: wallH, thickness: t } = PROTOTYPE_ROOM_CONFIG.walls
 const halfW = floorW / 2
 const halfD = floorD / 2
 
-/** Wall segments on XZ — centers and full width/depth match `PrototypeRoom.tsx`. */
+/** Wall segments on XZ (collision). `PrototypeRoom` meshes use `walls.visualOverlap` for slightly longer visuals. */
 const ROOM_WALL_RECTS: readonly RectCollider[] = [
   {
     id: 'wall-back',
