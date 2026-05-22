@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mist iteration atlas — EchoesOfAethon</title>
+  <style>
+    :root {
+      --bg0: #120a18;
+      --bg1: #1e0f24;
+      --panel: rgba(32, 18, 42, 0.88);
+      --panel2: rgba(48, 24, 58, 0.55);
+      --text: #f3e8f5;
+      --muted: #c9a8cf;
+      --accent: #e86bb8;
+      --accent2: #9b6dff;
+      --border: rgba(232, 107, 184, 0.35);
+      --code-bg: rgba(8, 4, 14, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.55;
+      background:
+        radial-gradient(120% 80% at 20% 0%, #3a1a4a 0%, transparent 55%),
+        radial-gradient(90% 70% at 100% 30%, #5a2048 0%, transparent 50%),
+        linear-gradient(165deg, var(--bg0) 0%, #1a0d22 40%, var(--bg1) 100%);
+      background-attachment: fixed;
+    }
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3.5rem;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.35rem;
+      background: linear-gradient(105deg, var(--text) 0%, var(--accent) 45%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin: 2rem 0 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin: 0 0 0.4rem;
+      color: #e8c4ef;
+    }
+
+    p {
+      margin: 0.5rem 0 0.75rem;
+      color: #e6d8ea;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-color: rgba(232, 107, 184, 0.45);
+    }
+
+    .ladder {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .rung {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.55rem 0.75rem;
+      background: var(--panel2);
+      border: 1px solid rgba(155, 109, 255, 0.2);
+      border-radius: 8px;
+    }
+
+    .rung span:first-child {
+      font-size: 0.9rem;
+    }
+
+    .ro {
+      font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, monospace;
+      font-size: 0.78rem;
+      color: #ffb8e6;
+      white-space: nowrap;
+    }
+
+    .cards {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1rem 0.85rem;
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #b89cff;
+      margin-bottom: 0.35rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 0.75rem 0 1rem;
+      background: var(--panel);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(232, 107, 184, 0.15);
+    }
+
+    th {
+      background: rgba(74, 36, 90, 0.5);
+      color: #ffd6f0;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    code, pre {
+      font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, monospace;
+    }
+
+    pre {
+      margin: 0.5rem 0 0;
+      padding: 0.85rem 1rem;
+      background: var(--code-bg);
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #f0d4ff;
+      border: 1px solid rgba(155, 109, 255, 0.25);
+    }
+
+    .packages {
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    details {
+      margin: 0.65rem 0;
+      background: var(--panel);
+      border: 1px solid rgba(155, 109, 255, 0.28);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+      color: #f5c8ff;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "▸";
+      color: var(--accent);
+      transition: transform 0.2s ease;
+    }
+
+    details[open] summary::after {
+      transform: rotate(90deg);
+    }
+
+    .details-body {
+      padding: 0 1rem 1rem;
+      border-top: 1px solid rgba(232, 107, 184, 0.12);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.75rem 0 0.5rem;
+    }
+
+    .tabs label {
+      cursor: pointer;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: var(--panel2);
+      border: 1px solid transparent;
+      color: var(--muted);
+    }
+
+    .cheat-tabs {
+      position: relative;
+    }
+
+    .cheat-tabs > input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .cheat-tabs #tab-formulas:checked ~ .tabs label[for="tab-formulas"],
+    .cheat-tabs #tab-fbm:checked ~ .tabs label[for="tab-fbm"] {
+      background: rgba(232, 107, 184, 0.25);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .tab-panel {
+      display: none;
+      margin-top: 0.5rem;
+    }
+
+    .cheat-tabs #tab-formulas:checked ~ .tab-panels #panel-formulas,
+    .cheat-tabs #tab-fbm:checked ~ .tab-panels #panel-fbm {
+      display: block;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(232, 107, 184, 0.2);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Mist iteration atlas</h1>
+      <p class="subtitle">EchoesOfAethon — layered WebGL mist stack (R3F / drei / three). Companion doc for tuning render order, density, and debug flags.</p>
+    </header>
+
+    <section aria-labelledby="ladder-h">
+      <h2 id="ladder-h">Render order ladder</h2>
+      <p>Within the transparent queue, lower <code>renderOrder</code> is drawn earlier (painter’s <strong>back → front</strong>). Opaque terrain and props usually render in the opaque pass, so they are not strictly interleaved with these numbers.</p>
+      <div class="ladder" role="list">
+        <div class="rung" role="listitem"><span><strong>SkyFogDome</strong> — shader sphere, distant color wash</span><span class="ro">−100</span></div>
+        <div class="rung" role="listitem"><span><strong>CelestialBodies</strong> — moon / stars meshes (<code>fog=false</code>)</span><span class="ro">−90 … −87</span></div>
+        <div class="rung" role="listitem"><span><strong>SkyCloudLayer</strong> — billboard planes (forward of dome / celestials)</span><span class="ro">−50</span></div>
+        <div class="rung" role="listitem"><span><strong>GroundFogLayer</strong> — stacked horizontal noise sheets</span><span class="ro">−3</span></div>
+        <div class="rung" role="listitem"><span><strong>RollingFogBands</strong> — low drifting banks</span><span class="ro">−2</span></div>
+        <div class="rung" role="listitem"><span><strong>VolumetricFogCurtains</strong> — vertical haze planes (same order tier as bands)</span><span class="ro">−2</span></div>
+        <div class="rung" role="listitem"><span><strong>MistParticles</strong> — point sprites (wind in VS)</span><span class="ro">0 (default)</span></div>
+        <div class="rung" role="listitem"><span><strong>CloudFogVolume</strong> — drei <code>Clouds</code> + <code>Cloud</code>, <code>MeshBasicMaterial</code></span><span class="ro">5</span></div>
+        <div class="rung" role="listitem"><span><strong>World &amp; props</strong> — <code>GeneratedMap</code>, interactables (opaque / default)</span><span class="ro">—</span></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="cards-h">
+      <h2 id="cards-h">Layer cards</h2>
+      <div class="cards">
+        <article class="card">
+          <span class="tag">Sky</span>
+          <h3>SkyFogDome</h3>
+          <p>Inverted or oversized sphere with custom shader; establishes dusk tint and horizon falloff. Kept at <code>renderOrder: -100</code> so it paints first, behind the stack.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Sky</span>
+          <h3>CelestialBodies</h3>
+          <p>Optional. Materials use <code>fog=false</code> so scene fog does not grey out moon/stars; sky clouds still sit forward on the ladder to veil them artistically.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Sky</span>
+          <h3>SkyCloudLayer</h3>
+          <p>Billboard planes, high relative order vs dome/celestials. Reads as soft cloud cards above the playfield.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Floor</span>
+          <h3>GroundFogLayer</h3>
+          <p>Horizontal planes with FBM noise; <strong>player</strong> and <strong>lantern</strong> radial clears (smooth pockets), optional edge fade toward map bounds. Multi-layer stack for depth.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Volume</span>
+          <h3>CloudFogVolume</h3>
+          <p><code>@react-three/drei</code> <code>Clouds</code> / <code>Cloud</code> with <code>MeshBasicMaterial</code>; stylized volumetric puff layers at configured heights and opacities.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Floor</span>
+          <h3>RollingFogBands</h3>
+          <p>Many low planes, drift animation, noise variation; stronger alpha than curtains. Lantern scatter tint can break uniformity.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Depth</span>
+          <h3>VolumetricFogCurtains</h3>
+          <p>Tall thin planes, <strong>very low alpha</strong>; suggest depth without readable rectangles. Gentle drift and noise.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Grain</span>
+          <h3>MistParticles</h3>
+          <p><code>THREE.Points</code> + custom shaders: wind in vertex stage, height fade, circular falloff in fragment shader; shares clear-pocket idea with ground fog.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="debug-h">
+      <h2 id="debug-h">Debug toggles (from *Config)</h2>
+      <p>Source-of-truth fields in <code>apps/web/src/rendering/mist/</code> and related configs. <code>forceHighVisibility</code> exaggerates layers for tuning.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Config file</th>
+            <th>Debug keys</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ground fog sheets</td>
+            <td><code>groundFogConfig.ts</code></td>
+            <td><code>debug.showGroundFog</code>, <code>debug.showParticles</code>, <code>debug.forceHighVisibility</code></td>
+          </tr>
+          <tr>
+            <td>Rolling bands</td>
+            <td><code>rollingFogBandsConfig.ts</code></td>
+            <td><code>debug.showRollingBands</code>, <code>debug.forceHighVisibility</code></td>
+          </tr>
+          <tr>
+            <td>Curtains</td>
+            <td><code>volumetricFogConfig.ts</code></td>
+            <td><code>debug.showFogCurtains</code>, <code>debug.forceHighVisibility</code></td>
+          </tr>
+          <tr>
+            <td>Particles</td>
+            <td><code>mistParticleConfig.ts</code></td>
+            <td><code>MIST_DEBUG</code> (module flag), <code>debug</code> mirrors it; visibility gated by <code>GROUND_FOG_CONFIG.debug.showParticles</code> in scene</td>
+          </tr>
+          <tr>
+            <td>Cloud fog volume</td>
+            <td><code>cloudFogConfig.ts</code></td>
+            <td><code>enabled</code> (no debug block — toggle at feature level)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section aria-labelledby="cheat-h">
+      <h2 id="cheat-h">Formulas cheat sheet</h2>
+      <p>Pure CSS “tabs”: radio buttons hide/show panels (no JS).</p>
+      <div class="cheat-tabs">
+        <input type="radio" name="cheat" id="tab-formulas" checked />
+        <input type="radio" name="cheat" id="tab-fbm" />
+        <div class="tabs" role="tablist" aria-label="Formula groups">
+          <label for="tab-formulas" role="tab">Overview</label>
+          <label for="tab-fbm" role="tab">FBM detail</label>
+        </div>
+        <div class="tab-panels">
+          <div class="tab-panel" id="panel-formulas" role="tabpanel">
+            <h3 style="margin-top:0.75rem">FBM loop (fragment-friendly)</h3>
+            <pre>float fbm(vec2 p) {
+  float v = 0.0;
+  float a = 0.5;
+  mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+  for (int i = 0; i &lt; 5; i++) {
+    v += a * noise(p);
+    p = m * p;
+    a *= 0.5;
+  }
+  return v;
+}</pre>
+            <h3>Smoothstep pocket (player / lantern clear)</h3>
+            <pre>float d = distance(worldXZ, centerXZ);
+float pocket = smoothstep(inner, outer, d);
+// pocket ≈ 0 near center (clear), 1 in fog
+float alpha = baseAlpha * pocket;</pre>
+            <h3>Height falloff (vertical mist)</h3>
+            <pre>float h = 1.0 - smoothstep(yLow, yHigh, worldY);
+// or on local pos.y for particles:
+float vHeightFade = 1.0 - smoothstep(0.12, 2.35, pos.y);</pre>
+          </div>
+          <div class="tab-panel" id="panel-fbm" role="tabpanel">
+            <p style="margin-top:0.75rem">Each octave shrinks amplitude (<code>a *= 0.5</code>) and rotates/scales UVs so repeats are less obvious. World-space <code>p</code> should be offset by time for drift. Ground fog in this project uses fixed world-scale multipliers on top of config <code>noiseScale</code>.</p>
+            <p>Combine FBM with pockets: <code>mix(thin, thick, fbm(p)) * pocket</code> for readable silhouettes near the player.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="pkg-h">
+      <h2 id="pkg-h">Packages</h2>
+      <div class="packages">
+        <code>@react-three/fiber</code> — React renderer &amp; <code>useFrame</code> loop<br />
+        <code>@react-three/drei</code> — <code>Cloud</code> / <code>Clouds</code> helpers<br />
+        <code>three</code> — core math, materials, <code>ShaderMaterial</code>, <code>Points</code>
+      </div>
+    </section>
+
+    <details>
+      <summary>Scene assembly note (<code>PrototypeScene</code>)</summary>
+      <div class="details-body">
+        <p>Fog-related nodes are ordered after atmosphere and sky stack, then map geometry: <code>GroundFogLayer</code> → optional <code>CloudFogVolume</code> → conditional <code>RollingFogBands</code> / <code>VolumetricFogCurtains</code> → <code>MistParticles</code> when <code>showParticles</code> is on.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Design intent (quick read)</summary>
+      <div class="details-body">
+        <p>Dome and curtains sell <strong>depth</strong>; ground sheets and rolling bands sell <strong>local volume</strong>; particles add <strong>fine grain</strong>; drei clouds add <strong>soft billows</strong> at mid heights. Tune each band independently so total alpha does not mud out silhouettes.</p>
+      </div>
+    </details>
+
+    <footer>
+      Standalone companion HTML — no network dependencies. Path: <code>changes.md/Iteration-Mist/mist-iteration-atlas.html</code>
+    </footer>
+  </div>
+</body>
+</html>
