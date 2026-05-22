@@ -1,7 +1,7 @@
 # Iteration 2 — Player interactions (progress README)
 
 This document summarizes **all work after** the session captured in  
-[`2026-05-22-interaction-foundation.md`](./2026-05-22-interaction-foundation.md)  
+[`interactionFoundation-20260522.md`](./interactionFoundation-20260522.md)  
 through the current codebase state. **Iteration 2 is not closed**; this README exists so the branch can be pushed with a clear handoff.
 
 ---
@@ -41,7 +41,7 @@ See the linked file for paths and the original QA checklist.
 
 ### D. Atmosphere + labels (2026-05-22)
 
-- **[`2026-05-22-atmosphere-world-labels.md`](./2026-05-22-atmosphere-world-labels.md)** — **`rendering/Atmosphere`**, **`atmosphereConfig`**, **`components/world-labels/WorldLabel`**, player overhead tag, scene fog/background.
+- **[`atmosphereWorldLabels-20260522.md`](./atmosphereWorldLabels-20260522.md)** — **`rendering/Atmosphere`**, **`atmosphereConfig`**, **`components/world-labels/WorldLabel`**, player overhead tag, scene fog/background.
 
 ### E. Still explicitly out of scope
 

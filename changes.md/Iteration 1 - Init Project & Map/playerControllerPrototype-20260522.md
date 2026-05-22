@@ -12,7 +12,7 @@ Added a **keyboard-driven placeholder player** (capsule mesh) under `features/pl
 - `apps/web/src/features/player/useKeyboardMovement.ts` — WASD tracking via `KeyboardEvent.code` + **blur / visibility** resets to prevent stuck inputs.
 - `apps/web/src/features/player/playerMovementSettings.ts` — `maxSpeed`, smoothing `response`, capsule dimensions.
 
-> **Note (later change):** settings were consolidated into `playerMovementConfig.ts` when world bounds were added (`changes.md/2026-05-22-player-world-bounds.md`).
+> **Note (later change):** settings were consolidated into `playerMovementConfig.ts` when world bounds were added (`./playerWorldBounds-20260522.md`).
 
 ### Updated
 

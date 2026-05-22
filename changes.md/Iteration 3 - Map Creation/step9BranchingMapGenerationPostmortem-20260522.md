@@ -170,7 +170,7 @@ because `mapSceneUtils.ts` instantiates **`FIXED_PROTOTYPE_MAP`** (branching) an
 | `geometry/mapRoomConnectors.ts` | `buildConnectionCorridors`, `buildNorthSouthCorridor` fix. |
 | `rendering/GeneratedConnectionBridge.tsx` | Renders corridor floor + side walls. |
 | `collision/mapCollision.ts` | `getConnectionCorridorColliders`. |
-| [`2026-05-22-multi-room-connectors-corridor-walls-postmortem.md`](2026-05-22-multi-room-connectors-corridor-walls-postmortem.md) | East/west corridor shell + React key + typing story. |
+| [`multiRoomConnectorsCorridorWallsPostmortem-20260522.md`](multiRoomConnectorsCorridorWallsPostmortem-20260522.md) | East/west corridor shell + React key + typing story. |
 
 ---
 

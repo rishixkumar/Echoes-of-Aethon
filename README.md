@@ -18,10 +18,10 @@ This repository keeps **human-readable session notes** under [`changes.md/`](cha
 
 ### Latest entry
 
-- [`changes.md/Iteration 3 - Map Creation/2026-05-22-camera-system-milestone.md`](changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-camera-system-milestone.md) — gameplay camera (FP/TP, zoom, transitions, wall collision, top-down fallback).
-- [`changes.md/Iteration 3 - Map Creation/2026-05-22-prototype-room-map-slice.md`](changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-prototype-room-map-slice.md) — hand-built prototype room, rect wall collision, exit zone, **Area Complete**.
+- [`changes.md/Iteration 3 - Map Creation/cameraSystemMilestone-20260522.md`](changes.md/Iteration%203%20-%20Map%20Creation/cameraSystemMilestone-20260522.md) — gameplay camera (FP/TP, zoom, transitions, wall collision, top-down fallback).
+- [`changes.md/Iteration 3 - Map Creation/prototypeRoomMapSlice-20260522.md`](changes.md/Iteration%203%20-%20Map%20Creation/prototypeRoomMapSlice-20260522.md) — hand-built prototype room, rect wall collision, exit zone, **Area Complete**.
 
-Earlier: [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) — Iteration 2 engineering narrative. [`changes.md/Iteration 1 - Init Project & Map/2026-05-22-readme-github-sync.md`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/2026-05-22-readme-github-sync.md) — README / `changes.md` cross-linking.
+Earlier: [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) — Iteration 2 engineering narrative. [`changes.md/Iteration 1 - Init Project & Map/readmeGithubSync-20260522.md`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/readmeGithubSync-20260522.md) — README / `changes.md` cross-linking.
 
 Browsing the **`changes.md`** folder on GitHub also renders [`changes.md/README.md`](changes.md/README.md) above the file list (same purpose as this section).
 

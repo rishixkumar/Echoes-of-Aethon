@@ -172,10 +172,10 @@ spacing.x = spacing.z = defaultCorridorLength + 20   (conservative early constan
 
 | Topic | Where to read |
 |--------|----------------|
-| Connector “missing walls,” thin bridges, React **`key`** overwrite, `GeneratedMapCollider` typing | [`changes.md/…/2026-05-22-multi-room-connectors-corridor-walls-postmortem.md`](../changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-multi-room-connectors-corridor-walls-postmortem.md) |
-| Single-room gate / outer-skin seam | [`changes.md/…/2026-05-22-prototype-room-wall-gap-postmortem.md`](../changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-prototype-room-wall-gap-postmortem.md) |
-| Refactor + room graph + validation + linear/templates | [`changes.md/…/2026-05-22-steps-5-8-validation-linear-map-templates.md`](../changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-steps-5-8-validation-linear-map-templates.md) |
-| **Step 9** branching + **north/south corridor null** fix | [`changes.md/…/2026-05-22-step-9-branching-map-generation-postmortem.md`](../changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-step-9-branching-map-generation-postmortem.md) |
+| Connector “missing walls,” thin bridges, React **`key`** overwrite, `GeneratedMapCollider` typing | [`changes.md/…/multiRoomConnectorsCorridorWallsPostmortem-20260522.md`](../changes.md/Iteration%203%20-%20Map%20Creation/multiRoomConnectorsCorridorWallsPostmortem-20260522.md) |
+| Single-room gate / outer-skin seam | [`changes.md/…/prototypeRoomWallGapPostmortem-20260522.md`](../changes.md/Iteration%203%20-%20Map%20Creation/prototypeRoomWallGapPostmortem-20260522.md) |
+| Refactor + room graph + validation + linear/templates | [`changes.md/…/steps5Through8ValidationLinearMapTemplates-20260522.md`](../changes.md/Iteration%203%20-%20Map%20Creation/steps5Through8ValidationLinearMapTemplates-20260522.md) |
+| **Step 9** branching + **north/south corridor null** fix | [`changes.md/…/step9BranchingMapGenerationPostmortem-20260522.md`](../changes.md/Iteration%203%20-%20Map%20Creation/step9BranchingMapGenerationPostmortem-20260522.md) |
 
 **Design stance:** Optional branches must not break **main-path solvability**; **loops**, **keys**, and **combat** are explicitly deferred.
 

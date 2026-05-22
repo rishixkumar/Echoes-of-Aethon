@@ -43,9 +43,9 @@ EchoesOfAethon/
 │   ├── README.md
 │   └── Iteration 2 - Player Interactions/
 │       ├── README.md
-│       ├── 2026-05-22-interaction-foundation.md
-│       ├── 2026-05-22-persistent-interaction-state.md
-│       └── 2026-05-22-atmosphere-world-labels.md
+│       ├── interactionFoundation-20260522.md
+│       ├── persistentInteractionState-20260522.md
+│       └── atmosphereWorldLabels-20260522.md
 ├── docs/
 │   ├── architecture-rules.md
 │   ├── iteration-01-summary.md
