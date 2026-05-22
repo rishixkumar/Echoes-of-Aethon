@@ -1,0 +1,12 @@
+{
+  "name": "echoes-of-aethon",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w web",
+    "build": "npm run build -w web"
+  }
+}
