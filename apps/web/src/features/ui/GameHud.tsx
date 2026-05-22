@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useState } from 'react'
 import { useCameraStore } from '../camera/cameraStore'
 import { isNearAnyInteractable } from '../interaction/interactableRegistry'
 import { useInteractionHudStore } from '../interaction/interactionHudStore'
@@ -6,6 +7,7 @@ import { usePlayerStore } from '../player/playerStore'
 import { useAreaStateStore } from '../world-state/areaStateStore'
 import { useWorldStateStore } from '../world-state/worldStateStore'
 import { getMistHudLines } from '../../rendering/mist/mistParticleConfig'
+import { DebugMetricsPanel } from './DebugMetricsPanel'
 
 const panel: CSSProperties = {
   position: 'absolute',
@@ -19,7 +21,7 @@ const panel: CSSProperties = {
   fontSize: 12,
   lineHeight: 1.35,
   maxWidth: 320,
-  pointerEvents: 'none',
+  pointerEvents: 'auto',
   userSelect: 'none',
 }
 
@@ -46,6 +48,7 @@ const areaCompleteBanner: CSSProperties = {
  * DOM overlay above the Canvas: movement hints + proximity interaction prompt + dev readouts.
  */
 export function GameHud() {
+  const [debugOpen, setDebugOpen] = useState(false)
   const interactionPrompt = useInteractionHudStore((s) => s.interactionPrompt)
   const [px, , pz] = usePlayerStore((s) => s.playerPosition)
   const nearInteractable = isNearAnyInteractable(px, pz)
@@ -61,6 +64,8 @@ export function GameHud() {
 
   const cameraLabel =
     cameraMode === 'first-person' ? 'First Person' : 'Third Person'
+
+  const mistLines = getMistHudLines()
 
   return (
     <>
@@ -78,34 +83,27 @@ export function GameHud() {
         <div style={{ marginTop: 6, fontWeight: 600 }}>
           Camera: {cameraLabel}
         </div>
-        <div
-          style={{
-            marginTop: 10,
-            paddingTop: 10,
-            borderTop: '1px solid rgba(232, 236, 245, 0.12)',
-            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-            fontSize: 11,
-            color: 'rgba(232, 236, 245, 0.7)',
-          }}
+        <button
+          type="button"
+          className="debug-toggle"
+          onClick={() => setDebugOpen((v) => !v)}
         >
-          {cameraMode === 'third-person' ? (
-            <div>Zoom (dist): {thirdPersonDistance.toFixed(2)}</div>
-          ) : (
-            <div>FOV: {firstPersonFov.toFixed(0)}</div>
-          )}
-          <div>
-            Player: x {px.toFixed(2)}, z {pz.toFixed(2)}
-          </div>
-          <div>Near interactable: {nearInteractable ? 'yes' : 'no'}</div>
-          <div>Active objects: {activeObjectCount}</div>
-          <div>Camera obstruction: {cameraObstruction}</div>
-          <div>Top-down blend: {topDownBlend.toFixed(2)}</div>
-          <div style={{ marginTop: 8, color: 'rgba(189, 162, 255, 0.95)' }}>
-            {getMistHudLines().map((line) => (
-              <div key={line}>{line}</div>
-            ))}
-          </div>
-        </div>
+          {debugOpen ? 'Hide Debug' : 'Show Debug'}
+        </button>
+        {debugOpen ? (
+          <DebugMetricsPanel
+            cameraMode={cameraMode}
+            thirdPersonDistance={thirdPersonDistance}
+            firstPersonFov={firstPersonFov}
+            px={px}
+            pz={pz}
+            nearInteractable={nearInteractable}
+            activeObjectCount={activeObjectCount}
+            cameraObstruction={cameraObstruction}
+            topDownBlend={topDownBlend}
+            mistLines={mistLines}
+          />
+        ) : null}
         {interactionPrompt ? (
           <div
             style={{
