@@ -10,7 +10,9 @@ import {
   Vector3,
 } from 'three'
 import { createSeededRandom } from '../../features/map-generation/data/seededRandom'
+import { useCameraStore } from '../../features/camera/cameraStore'
 import { usePlayerStore } from '../../features/player/playerStore'
+import { GROUND_FOG_CONFIG } from './groundFogConfig'
 import { MIST_PARTICLE_CONFIG } from './mistParticleConfig'
 
 type MapBoundsXZ = Readonly<{
@@ -30,12 +32,11 @@ const WZ = WS * 0.8
 
 const vertexShader = /* glsl */ `
 uniform float uTime;
-uniform vec3 uPlayerPosition;
 
 attribute float aSize;
 attribute float aPhase;
 
-varying float vDistanceToPlayer;
+varying vec3 vWorldPosition;
 varying float vHeightFade;
 
 void main() {
@@ -44,15 +45,14 @@ void main() {
   pos.x += sin(uTime * ${WS.toFixed(4)} + aPhase) * ${STR.toFixed(4)};
   pos.z += cos(uTime * ${WZ.toFixed(4)} + aPhase) * ${STR.toFixed(4)};
 
-  float dist = distance(pos.xz, uPlayerPosition.xz);
-  vDistanceToPlayer = dist;
+  vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
   vHeightFade = 1.0 - smoothstep(0.1, 1.0, pos.y);
 
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
 
   gl_PointSize = aSize * (12.0 / max(-mvPosition.z, 3.0));
-  gl_PointSize = clamp(gl_PointSize, 3.0, 22.0);
+  gl_PointSize = clamp(gl_PointSize, 2.0, 16.0);
 
   gl_Position = projectionMatrix * mvPosition;
 }
@@ -61,23 +61,37 @@ void main() {
 const fragmentShader = /* glsl */ `
 uniform vec3 uColor;
 uniform float uBaseAlpha;
+uniform vec3 uPlayerPosition;
+uniform vec3 uLanternPosition;
 uniform float uClearRadius;
 uniform float uClearSoftness;
+uniform float uLanternClearRadius;
+uniform float uLanternClearSoftness;
 
-varying float vDistanceToPlayer;
+varying vec3 vWorldPosition;
 varying float vHeightFade;
 
 void main() {
   vec2 uv = gl_PointCoord - vec2(0.5);
   float circle = 1.0 - smoothstep(0.32, 0.5, length(uv));
 
+  float distPlayer = distance(vWorldPosition.xz, uPlayerPosition.xz);
   float playerClear = smoothstep(
     uClearRadius,
     uClearRadius + uClearSoftness,
-    vDistanceToPlayer
+    distPlayer
   );
 
-  float alpha = uBaseAlpha * circle * vHeightFade * playerClear;
+  float distLantern = distance(vWorldPosition.xz, uLanternPosition.xz);
+  float lanternClear = smoothstep(
+    uLanternClearRadius,
+    uLanternClearRadius + uLanternClearSoftness,
+    distLantern
+  );
+
+  float pocketClear = max(playerClear, lanternClear);
+
+  float alpha = uBaseAlpha * circle * vHeightFade * pocketClear;
 
   if (alpha < 0.01) discard;
 
@@ -120,13 +134,15 @@ function buildMistGeometry(bounds: MapBoundsXZ): BufferGeometry {
 
 const farColorScratch = new Color()
 
+const lanternLocal = new Vector3(0.38, 0.95, 0.25)
+
 /**
- * Simple floor mist (staged): visible purple haze when `MIST_DEBUG` is true,
- * then flip `MIST_DEBUG` in `mistParticleConfig.ts` for subtle values.
+ * Secondary wisps on top of `GroundFogLayer`; shares lantern / player clear pocket with ground sheets.
  */
 export function MistParticles({ mapBounds }: MistParticlesProps) {
   const pointsRef = useRef<Points>(null)
   const scratchColor = useMemo(() => new Color(), [])
+  const scratchLantern = useMemo(() => new Vector3(), [])
 
   const geometry = useMemo(
     () => buildMistGeometry(mapBounds),
@@ -143,10 +159,15 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
     () => ({
       uTime: { value: 0 },
       uPlayerPosition: { value: new Vector3() },
+      uLanternPosition: { value: new Vector3() },
       uColor: { value: new Color(MIST_PARTICLE_CONFIG.color.near) },
       uBaseAlpha: { value: MIST_PARTICLE_CONFIG.alpha.base },
       uClearRadius: { value: MIST_PARTICLE_CONFIG.playerClear.radius },
       uClearSoftness: { value: MIST_PARTICLE_CONFIG.playerClear.softness },
+      uLanternClearRadius: { value: MIST_PARTICLE_CONFIG.lanternClear.radius },
+      uLanternClearSoftness: {
+        value: MIST_PARTICLE_CONFIG.lanternClear.softness,
+      },
     }),
     [],
   )
@@ -157,17 +178,32 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
     if (!mat || !(mat instanceof ShaderMaterial)) return
 
     const [px, py, pz] = usePlayerStore.getState().playerPosition
+    const yaw = useCameraStore.getState().yaw
+    const cos = Math.cos(yaw)
+    const sin = Math.sin(yaw)
+    scratchLantern.set(
+      px + lanternLocal.x * cos + lanternLocal.z * sin,
+      py + lanternLocal.y,
+      pz - lanternLocal.x * sin + lanternLocal.z * cos,
+    )
 
     farColorScratch.set(MIST_PARTICLE_CONFIG.color.far)
     scratchColor.set(MIST_PARTICLE_CONFIG.color.near)
     scratchColor.lerp(farColorScratch, 0.45)
 
+    const vis = GROUND_FOG_CONFIG.debug.forceHighVisibility ? 1.5 : 1
+
     mat.uniforms.uTime.value = clock.elapsedTime
     mat.uniforms.uPlayerPosition.value.set(px, py, pz)
+    mat.uniforms.uLanternPosition.value.copy(scratchLantern)
     mat.uniforms.uColor.value.copy(scratchColor)
-    mat.uniforms.uBaseAlpha.value = MIST_PARTICLE_CONFIG.alpha.base
+    mat.uniforms.uBaseAlpha.value = MIST_PARTICLE_CONFIG.alpha.base * vis
     mat.uniforms.uClearRadius.value = MIST_PARTICLE_CONFIG.playerClear.radius
     mat.uniforms.uClearSoftness.value = MIST_PARTICLE_CONFIG.playerClear.softness
+    mat.uniforms.uLanternClearRadius.value =
+      MIST_PARTICLE_CONFIG.lanternClear.radius
+    mat.uniforms.uLanternClearSoftness.value =
+      MIST_PARTICLE_CONFIG.lanternClear.softness
   })
 
   const depthTest = !MIST_PARTICLE_CONFIG.debug

@@ -5,6 +5,8 @@ import { EchoGate } from '../features/world-objects/EchoGate'
 import { ExitZone } from '../features/world-objects/ExitZone'
 import { GeneratedMap, FIXED_PROTOTYPE_MAP } from '../features/map-generation'
 import { Atmosphere } from '../rendering/Atmosphere'
+import { GROUND_FOG_CONFIG } from '../rendering/mist/groundFogConfig'
+import { GroundFogLayer } from '../rendering/mist/GroundFogLayer'
 import { MistParticles } from '../rendering/mist/MistParticles'
 import { PROTOTYPE_SCENE_CONFIG } from './prototypeSceneConfig'
 
@@ -33,7 +35,10 @@ export function PrototypeScene() {
         shadow-camera-bottom={mapBounds.minZ - shadowPad}
       />
       <GeneratedMap map={FIXED_PROTOTYPE_MAP} />
-      <MistParticles mapBounds={PROTOTYPE_SCENE_CONFIG.mapBounds} />
+      <GroundFogLayer mapBounds={PROTOTYPE_SCENE_CONFIG.mapBounds} />
+      {GROUND_FOG_CONFIG.debug.showParticles ? (
+        <MistParticles mapBounds={PROTOTYPE_SCENE_CONFIG.mapBounds} />
+      ) : null}
       <EchoGate />
       <ExitZone />
       <GameCamera />

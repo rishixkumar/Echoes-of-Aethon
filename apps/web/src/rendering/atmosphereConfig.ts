@@ -2,8 +2,8 @@ export const ATMOSPHERE_CONFIG = {
   background: '#07020c',
   fog: {
     color: '#140614',
-    near: 2.8,
-    far: 42,
+    near: 2.5,
+    far: 12,
   },
   ambientLight: {
     intensity: 0.48,
