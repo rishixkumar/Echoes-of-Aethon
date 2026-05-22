@@ -1,10 +1,11 @@
 /**
  * Player movement tuning for the prototype (no physics engine).
  *
- * `bounds` match `PrototypeScene` ground: `planeGeometry` 12×12 centered at origin
- * (±6 along X/Z), inset by the capsule radius so the mesh stays visually on the slab.
+ * Slab bounds use `PROTOTYPE_SCENE_CONFIG.floor.halfExtent`, inset by the capsule radius.
  */
-const PLANE_HALF_EXTENT = 6
+import { PROTOTYPE_SCENE_CONFIG } from '../../scenes/prototypeSceneConfig'
+
+const { halfExtent } = PROTOTYPE_SCENE_CONFIG.floor
 const CAPSULE_RADIUS = 0.35
 const CAPSULE_LENGTH = 0.9
 
@@ -16,9 +17,9 @@ export const PLAYER_MOVEMENT_CONFIG = {
     length: CAPSULE_LENGTH,
   },
   bounds: {
-    minX: -PLANE_HALF_EXTENT + CAPSULE_RADIUS,
-    maxX: PLANE_HALF_EXTENT - CAPSULE_RADIUS,
-    minZ: -PLANE_HALF_EXTENT + CAPSULE_RADIUS,
-    maxZ: PLANE_HALF_EXTENT - CAPSULE_RADIUS,
+    minX: -halfExtent + CAPSULE_RADIUS,
+    maxX: halfExtent - CAPSULE_RADIUS,
+    minZ: -halfExtent + CAPSULE_RADIUS,
+    maxZ: halfExtent - CAPSULE_RADIUS,
   },
 } as const

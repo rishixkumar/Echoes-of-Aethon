@@ -1,8 +1,12 @@
 import { OrbitControls } from '@react-three/drei'
+import { InteractableRenderer } from '../features/interaction/InteractableRenderer'
 import { PlayerController } from '../features/player/PlayerController'
+import { PROTOTYPE_SCENE_CONFIG } from './prototypeSceneConfig'
+
+const floorSize = PROTOTYPE_SCENE_CONFIG.floor.size
 
 /**
- * Prototype playground: lighting, ground, orbit inspection, and a keyboard-driven placeholder player.
+ * Prototype playground: lighting, ground, orbit inspection, player movement, and interactables.
  */
 export function PrototypeScene() {
   return (
@@ -23,8 +27,9 @@ export function PrototypeScene() {
         shadow-camera-bottom={-10}
       />
       <PlayerController spawn={{ x: 0, z: 0 }} />
+      <InteractableRenderer />
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[12, 12]} />
+        <planeGeometry args={[floorSize, floorSize]} />
         <meshStandardMaterial color="#1a2030" metalness={0.05} roughness={0.95} />
       </mesh>
       <OrbitControls makeDefault enableDamping dampingFactor={0.08} />

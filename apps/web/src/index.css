@@ -25,3 +25,18 @@ body {
     Arial,
     sans-serif;
 }
+
+/* Drei <Html /> world-space prompts (see TestInteractable) */
+.worldPrompt {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(12, 16, 26, 0.82);
+  border: 1px solid rgba(191, 232, 255, 0.35);
+  color: #dff6ff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}

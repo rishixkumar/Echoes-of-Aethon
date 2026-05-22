@@ -1,7 +1,9 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
+import { xzOverlapsAnyStaticCollider } from '../collision/staticColliders'
 import { PLAYER_MOVEMENT_CONFIG } from './playerMovementConfig'
+import { usePlayerStore } from './playerStore'
 import { useKeyboardMovement } from './useKeyboardMovement'
 
 type PlayerControllerProps = Readonly<{
@@ -12,7 +14,7 @@ type PlayerControllerProps = Readonly<{
 /**
  * Keyboard-driven placeholder avatar (no physics engine).
  * Movement is camera-relative on the XZ plane for sensible steering with OrbitControls.
- * World limits: simple axis-aligned bounds clamp (not mesh collision yet).
+ * World limits: axis-aligned slab clamp + static XZ circle colliders (no physics engine).
  */
 export function PlayerController({ spawn }: PlayerControllerProps) {
   const groupRef = useRef<Group>(null)
@@ -59,6 +61,9 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
     const k = 1 - Math.exp(-PLAYER_MOVEMENT_CONFIG.response * delta)
     velocity.current.lerp(desired, k)
 
+    const prevX = group.position.x
+    const prevZ = group.position.z
+
     const rawX = group.position.x + velocity.current.x * delta
     const rawZ = group.position.z + velocity.current.z * delta
 
@@ -69,9 +74,21 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
     if (rawX !== clampedX) velocity.current.x = 0
     if (rawZ !== clampedZ) velocity.current.z = 0
 
-    group.position.x = clampedX
-    group.position.z = clampedZ
+    const playerR = PLAYER_MOVEMENT_CONFIG.capsule.radius
+    if (xzOverlapsAnyStaticCollider(clampedX, clampedZ, playerR)) {
+      group.position.x = prevX
+      group.position.z = prevZ
+      velocity.current.x = 0
+      velocity.current.z = 0
+    } else {
+      group.position.x = clampedX
+      group.position.z = clampedZ
+    }
     group.position.y = 0
+
+    usePlayerStore
+      .getState()
+      .setPlayerPosition([group.position.x, group.position.y, group.position.z])
   })
 
   const { capsule } = PLAYER_MOVEMENT_CONFIG
