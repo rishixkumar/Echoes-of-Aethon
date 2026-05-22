@@ -69,55 +69,57 @@ Out of scope (explicitly deferred): inventory, dialogue, full physics, particles
 
 ## Algorithms and mathematical models
 
+These expressions use **plain `text` fences and Unicode** so they stay readable in *any* Markdown preview (Cursor, GitHub without math, etc.). Optional: GitHub web and VS Code with **Markdown › Math** can also render LaTeX if you paste equivalent `$…$` / `$$…$$` elsewhere.
+
 ### 1. Camera-relative steering on the XZ plane
 
-Each frame the controller reads the camera world direction \(\hat{v}_c\), **projects** it onto the horizontal plane:
+Each frame the controller reads the camera world direction `v_c`, **projects** it onto the horizontal plane (zero the Y component, then normalize):
 
-\[
-\hat{v}_{xz} = \frac{\bigl[\hat{v}_{c,x},\ 0,\ \hat{v}_{c,z}\bigr]}{\bigl\|\bigl[\hat{v}_{c,x},\ 0,\ \hat{v}_{c,z}\bigr]\bigr\|}
-\]
+```text
+v_xz = normalize( [ v_c.x, 0, v_c.z ] )
+```
 
-(with a fallback axis if \(\|\cdot\|\) is below a numerical epsilon). **Right** is \(\hat{r} = \hat{v}_{xz} \times \hat{u}\) with world up \(\hat{u} = (0,1,0)\), normalized. Input axes combine into a **desired horizontal velocity** \(\mathbf{v}_d\) capped at configured `speed` (4 m/s in `PLAYER_MOVEMENT_CONFIG`).
+(with a fallback axis if ‖v_xz‖ is below a numerical epsilon). **Right** is `r = v_xz × u` with world up `u = (0, 1, 0)`, normalized. Input axes combine into a **desired horizontal velocity** `v_d` capped at configured `speed` (4 m/s in `PLAYER_MOVEMENT_CONFIG`).
 
 **Reasoning:** With `OrbitControls`, world-fixed WASD feels wrong; camera-relative steering matches exploration mental models and keeps controls stable as the inspection camera orbits.
 
 ### 2. Frame-rate–stable exponential smoothing (velocity)
 
-Instead of snapping velocity to the input vector, horizontal velocity \(\mathbf{v}\) **lerps** toward \(\mathbf{v}_d\) each frame with smoothing factor
+Instead of snapping velocity to the input vector, horizontal velocity `v` **lerps** toward `v_d` each frame with smoothing factor
 
-\[
-k(\Delta t) = 1 - e^{-\lambda \Delta t}
-\]
+```text
+k(Δt) = 1 - exp( -λ · Δt )
+```
 
-where \(\lambda =\) `PLAYER_MOVEMENT_CONFIG.response` (10 s⁻¹) and \(\Delta t\) is R3F’s frame delta. Implementation: `velocity.current.lerp(desired, k)`.
+where λ = `PLAYER_MOVEMENT_CONFIG.response` (10 s⁻¹) and Δt is R3F’s frame delta. Implementation: `velocity.current.lerp(desired, k)`.
 
-**Reasoning:** This is a **first-order low-pass** on velocity; \(k\) scales automatically with \(\Delta t\), so response is stable at 60 Hz vs 120 Hz unlike naive `lerp(a, b, fixedAlpha)`.
+**Reasoning:** This is a **first-order low-pass** on velocity; k scales automatically with Δt, so response is stable at 60 Hz vs 120 Hz unlike naive `lerp(a, b, fixedAlpha)`.
 
 ### 3. Axis-aligned slab bounds with capsule inset
 
-Let floor half-extent be \(H = 6\) (12 m floor). Capsule foot radius \(r = 0.35\). Valid center positions satisfy:
+Let floor half-extent be H = 6 (12 m floor). Capsule foot radius r = 0.35. Valid center positions satisfy:
 
-\[
-x \in [-H + r,\ H - r],\quad z \in [-H + r,\ H - r]
-\]
+```text
+x ∈ [ -H + r ,  H - r ]     z ∈ [ -H + r ,  H - r ]
+```
 
 If a clamp fires on an axis, that axis’s velocity is zeroed (inelastic contact with invisible walls).
 
-**Reasoning:** Prevents the mesh from visually intersecting the slab edge while keeping math \(O(1)\).
+**Reasoning:** Prevents the mesh from visually intersecting the slab edge while keeping math O(1).
 
 ### 4. Proximity selection — horizontal disk + argmin distance
 
-For interactable \(i\) at \((x_i, z_i)\) with radius \(R_i\), planar distance:
+For interactable i at (x_i, z_i) with radius R_i, planar distance:
 
-\[
-d_i = \sqrt{(p_x - x_i)^2 + (p_z - z_i)^2}
-\]
+```text
+d_i = sqrt( (p_x - x_i)² + (p_z - z_i)² )
+```
 
-Eligible set \(\{ i : d_i \le R_i \}\). If multiple disks overlap, the engine picks
+Eligible set **{ i | d_i ≤ R_i }**. If multiple disks overlap, the engine picks
 
-\[
-i^\* = \arg\min_{i:\, d_i \le R_i} d_i
-\]
+```text
+i* = argmin over { i : d_i ≤ R_i } of d_i
+```
 
 (`pickNearestInteractable` in `interactableRegistry.ts`).
 
@@ -125,23 +127,23 @@ i^\* = \arg\min_{i:\, d_i \le R_i} d_i
 
 ### 5. Static collision — circle–circle overlap on XZ
 
-Player treated as circle radius \(r_p\) at \((p_x, p_z)\); static collider \(j\) radius \(r_j\) at \((x_j, z_j)\). Overlap predicate:
+Player treated as circle radius r_p at (p_x, p_z); static collider j radius r_j at (x_j, z_j). Overlap predicate:
 
-\[
-\sqrt{(p_x - x_j)^2 + (p_z - z_j)^2} < r_p + r_j
-\]
+```text
+sqrt( (p_x - x_j)² + (p_z - z_j)² )  <  r_p + r_j
+```
 
-If true after proposing a move, **revert** to previous \((x, z)\) and zero horizontal velocity (hard rejection, no penetration resolution).
+If true after proposing a move, **revert** to previous (x, z) and zero horizontal velocity (hard rejection, no penetration resolution).
 
 **Reasoning:** No physics engine yet; circle–circle is cheap, stable, and good enough for prototype pillars and gate blocking. The collider list is **dynamic**: the gate’s circle is omitted once `unlocksWhen` interactable is activated (`getCollidersForPlayer`).
 
 ### 6. Linear depth fog (Three.js `Fog`)
 
-Linear fog mixes the fragment toward fog color based on depth \(z\) (eye-space):
+Linear fog mixes the fragment toward fog color based on eye-space depth z:
 
-\[
-f = \mathrm{clamp}\left(\frac{z_{\text{far}} - z}{z_{\text{far}} - z_{\text{near}}},\ 0,\ 1\right)
-\]
+```text
+f = clamp( (z_far - z) / (z_far - z_near) , 0 , 1 )
+```
 
 Current tuned endpoints: `near = 4`, `far = 16` (see `atmosphereConfig.ts`).
 
@@ -149,15 +151,15 @@ Current tuned endpoints: `near = 4`, `far = 16` (see `atmosphereConfig.ts`).
 
 ### 7. Player lantern flicker — quasi-periodic intensity modulation
 
-Two incommensurate angular frequencies \(\omega_1 = 9\,\text{rad/s}\), \(\omega_2 = 17\,\text{rad/s}\) on elapsed time \(t\):
+Two incommensurate angular frequencies ω₁ = 9 rad/s, ω₂ = 17 rad/s on elapsed time t:
 
-\[
-F(t) = 1 + 0.08\sin(\omega_1 t) + 0.04\sin(\omega_2 t)
-\]
+```text
+F(t) = 1 + 0.08·sin(ω₁·t) + 0.04·sin(ω₂·t)
+```
 
-Core and fill point-light intensities scale as \(I_{\text{core}} = 4.5\,F(t)\), \(I_{\text{fill}} = 1.4\,F(t)\).
+Core and fill point-light intensities scale as I_core = 4.5 · F(t), I_fill = 1.4 · F(t).
 
-**Reasoning:** A single sine reads as mechanical breathing; two terms approximate **non-repeating flame/lamp shimmer** while staying bounded (\(\approx [0.88,\ 1.12]\) on the multiplicative factor before clamping by engine).
+**Reasoning:** A single sine reads as mechanical breathing; two terms approximate **non-repeating flame/lamp shimmer** while staying bounded (≈ [0.88, 1.12] on the multiplicative factor before clamping by engine).
 
 ### 8. Billboard DOM labels (Drei `<Html sprite />`)
 
@@ -173,8 +175,8 @@ World labels use Drei’s `Html` with `sprite` so the attached CSS plane **alway
 |----------|----------------|--------|
 | Floor size | 12 m (`size`), half-extent 6 | `prototypeSceneConfig.ts` |
 | Move speed | 4 | `playerMovementConfig.ts` |
-| Velocity smoothing \(\lambda\) | 10 | `playerMovementConfig.ts` |
-| Capsule \(r\), cylinder length | 0.35, 0.9 | `playerMovementConfig.ts` |
+| Velocity smoothing λ | 10 | `playerMovementConfig.ts` |
+| Capsule radius r, cylinder length | 0.35, 0.9 | `playerMovementConfig.ts` |
 | Interactable default horizontal radius | 1.5 | `interactableRegistry.ts` entries |
 | Collider radius (XZ) | 0.75 | same |
 | Gate collider radius | 1.3 | `prototypeSceneConfig.gate` |
