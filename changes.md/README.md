@@ -10,4 +10,4 @@ This directory stores **human-readable records of structural and tooling changes
 
 ## Latest entry
 
-See `2026-05-22-frontend-boot.md`.
+See `2026-05-22-github-initial-push.md`.
