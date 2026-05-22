@@ -2,8 +2,12 @@ import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 import { PointLight } from 'three'
 
+const CORE_BASE = 3.2
+const FILL_BASE = 0.9
+
 /**
- * Layered warm + fantasy fill point lights with a small emissive lantern mesh — no floor decal.
+ * Lantern lights — warm core + pink fantasy fill.
+ * The fill radiates enough to scatter off nearby fog but doesn't illuminate the whole map.
  */
 export function PlayerAura() {
   const coreLightRef = useRef<PointLight>(null)
@@ -12,14 +16,14 @@ export function PlayerAura() {
   useFrame(({ clock }) => {
     const flicker =
       1 +
-      Math.sin(clock.elapsedTime * 9) * 0.08 +
-      Math.sin(clock.elapsedTime * 17) * 0.04
+      Math.sin(clock.elapsedTime * 9) * 0.06 +
+      Math.sin(clock.elapsedTime * 17) * 0.03
 
     if (coreLightRef.current) {
-      coreLightRef.current.intensity = 5.4 * flicker
+      coreLightRef.current.intensity = CORE_BASE * flicker
     }
     if (fillLightRef.current) {
-      fillLightRef.current.intensity = 1.75 * flicker
+      fillLightRef.current.intensity = FILL_BASE * flicker
     }
   })
 
@@ -28,25 +32,25 @@ export function PlayerAura() {
       <pointLight
         ref={coreLightRef}
         position={[0, 1.15, 0]}
-        color="#ffd6a3"
-        intensity={5.4}
-        distance={6.25}
-        decay={1.28}
+        color="#ffd2ad"
+        intensity={CORE_BASE}
+        distance={5.8}
+        decay={1.5}
       />
       <pointLight
         ref={fillLightRef}
         position={[0, 0.45, 0]}
-        color="#ff8fd6"
-        intensity={1.75}
+        color="#ff6abd"
+        intensity={FILL_BASE}
         distance={9}
-        decay={1.65}
+        decay={1.7}
       />
       <mesh position={[0.38, 0.95, 0.25]}>
         <sphereGeometry args={[0.09, 16, 16]} />
         <meshStandardMaterial
           color="#ffd6a3"
-          emissive="#ffb35c"
-          emissiveIntensity={2.5}
+          emissive="#a86830"
+          emissiveIntensity={1.8}
         />
       </mesh>
     </>

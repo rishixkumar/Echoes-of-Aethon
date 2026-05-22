@@ -14,6 +14,7 @@ import { useCameraStore } from '../../features/camera/cameraStore'
 import { usePlayerStore } from '../../features/player/playerStore'
 import { GROUND_FOG_CONFIG } from './groundFogConfig'
 import { MIST_PARTICLE_CONFIG } from './mistParticleConfig'
+import { VOLUMETRIC_FOG_CONFIG } from './volumetricFogConfig'
 
 type MapBoundsXZ = Readonly<{
   minX: number
@@ -47,12 +48,12 @@ void main() {
 
   vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
-  vHeightFade = 1.0 - smoothstep(0.1, 1.0, pos.y);
+  vHeightFade = 1.0 - smoothstep(0.12, 2.35, pos.y);
 
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
 
   gl_PointSize = aSize * (12.0 / max(-mvPosition.z, 3.0));
-  gl_PointSize = clamp(gl_PointSize, 2.0, 16.0);
+  gl_PointSize = clamp(gl_PointSize, 0.8, 4.0);
 
   gl_Position = projectionMatrix * mvPosition;
 }
@@ -67,6 +68,7 @@ uniform float uClearRadius;
 uniform float uClearSoftness;
 uniform float uLanternClearRadius;
 uniform float uLanternClearSoftness;
+uniform float uMinimumFogNearPlayer;
 
 varying vec3 vWorldPosition;
 varying float vHeightFade;
@@ -76,24 +78,26 @@ void main() {
   float circle = 1.0 - smoothstep(0.32, 0.5, length(uv));
 
   float distPlayer = distance(vWorldPosition.xz, uPlayerPosition.xz);
-  float playerClear = smoothstep(
+  float clearPlayerFactor = smoothstep(
     uClearRadius,
     uClearRadius + uClearSoftness,
     distPlayer
   );
+  float playerPocket = mix(uMinimumFogNearPlayer, 1.0, clearPlayerFactor);
 
   float distLantern = distance(vWorldPosition.xz, uLanternPosition.xz);
-  float lanternClear = smoothstep(
+  float clearLanternFactor = smoothstep(
     uLanternClearRadius,
     uLanternClearRadius + uLanternClearSoftness,
     distLantern
   );
+  float lanternPocket = mix(uMinimumFogNearPlayer, 1.0, clearLanternFactor);
 
-  float pocketClear = max(playerClear, lanternClear);
+  float pocketClear = max(playerPocket, lanternPocket);
 
   float alpha = uBaseAlpha * circle * vHeightFade * pocketClear;
 
-  if (alpha < 0.01) discard;
+  if (alpha < 0.0015) discard;
 
   gl_FragColor = vec4(uColor, alpha);
 }
@@ -168,6 +172,9 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
       uLanternClearSoftness: {
         value: MIST_PARTICLE_CONFIG.lanternClear.softness,
       },
+      uMinimumFogNearPlayer: {
+        value: MIST_PARTICLE_CONFIG.playerClear.minimumFogNearPlayer,
+      },
     }),
     [],
   )
@@ -191,7 +198,11 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
     scratchColor.set(MIST_PARTICLE_CONFIG.color.near)
     scratchColor.lerp(farColorScratch, 0.45)
 
-    const vis = GROUND_FOG_CONFIG.debug.forceHighVisibility ? 1.5 : 1
+    const vis =
+      GROUND_FOG_CONFIG.debug.forceHighVisibility ||
+      VOLUMETRIC_FOG_CONFIG.debug.forceHighVisibility
+        ? 1.5
+        : 1
 
     mat.uniforms.uTime.value = clock.elapsedTime
     mat.uniforms.uPlayerPosition.value.set(px, py, pz)
@@ -204,6 +215,8 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
       MIST_PARTICLE_CONFIG.lanternClear.radius
     mat.uniforms.uLanternClearSoftness.value =
       MIST_PARTICLE_CONFIG.lanternClear.softness
+    mat.uniforms.uMinimumFogNearPlayer.value =
+      MIST_PARTICLE_CONFIG.playerClear.minimumFogNearPlayer
   })
 
   const depthTest = !MIST_PARTICLE_CONFIG.debug

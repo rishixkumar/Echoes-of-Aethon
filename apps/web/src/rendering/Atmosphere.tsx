@@ -5,6 +5,7 @@ import { ATMOSPHERE_CONFIG } from './atmosphereConfig'
 
 export function Atmosphere() {
   const { scene } = useThree()
+  const L = ATMOSPHERE_CONFIG.lights
 
   useEffect(() => {
     scene.background = new Color(ATMOSPHERE_CONFIG.background)
@@ -20,20 +21,30 @@ export function Atmosphere() {
     }
   }, [scene])
 
+  const wf = ATMOSPHERE_CONFIG.worldFill
+
   return (
     <>
-      <ambientLight intensity={ATMOSPHERE_CONFIG.ambientLight.intensity} />
+      <ambientLight intensity={L.ambient.intensity} />
       <hemisphereLight
-        args={[
-          ATMOSPHERE_CONFIG.hemisphereLight.skyColor,
-          ATMOSPHERE_CONFIG.hemisphereLight.groundColor,
-          ATMOSPHERE_CONFIG.hemisphereLight.intensity,
-        ]}
+        args={[L.hemisphere.skyColor, L.hemisphere.groundColor, L.hemisphere.intensity]}
       />
       <directionalLight
-        position={ATMOSPHERE_CONFIG.moonLight.position}
-        intensity={ATMOSPHERE_CONFIG.moonLight.intensity}
-        color={ATMOSPHERE_CONFIG.moonLight.color}
+        position={L.main.position}
+        intensity={L.main.intensity}
+        color={L.main.color}
+      />
+      <directionalLight
+        position={L.fill.position}
+        intensity={L.fill.intensity}
+        color={L.fill.color}
+      />
+      <pointLight
+        position={wf.position}
+        intensity={wf.intensity}
+        distance={wf.distance}
+        decay={wf.decay}
+        color={wf.color}
       />
     </>
   )

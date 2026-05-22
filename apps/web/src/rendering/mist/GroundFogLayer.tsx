@@ -52,6 +52,7 @@ uniform float uClearRadius;
 uniform float uClearSoftness;
 uniform float uLanternClearRadius;
 uniform float uLanternClearSoftness;
+uniform float uMinimumFogNearPlayer;
 uniform float uEdgeFade;
 
 varying vec2 vUv;
@@ -66,14 +67,11 @@ float hash(vec2 p) {
 float noise(vec2 p) {
   vec2 i = floor(p);
   vec2 f = fract(p);
-
   float a = hash(i);
   float b = hash(i + vec2(1.0, 0.0));
   float c = hash(i + vec2(0.0, 1.0));
   float d = hash(i + vec2(1.0, 1.0));
-
   vec2 u = f * f * (3.0 - 2.0 * f);
-
   return mix(a, b, u.x)
     + (c - a) * u.y * (1.0 - u.x)
     + (d - b) * u.x * u.y;
@@ -82,52 +80,65 @@ float noise(vec2 p) {
 float fbm(vec2 p) {
   float value = 0.0;
   float amplitude = 0.5;
-
   for (int i = 0; i < 4; i++) {
     value += amplitude * noise(p);
     p *= 2.0;
     amplitude *= 0.5;
   }
-
   return value;
 }
 
 void main() {
-  vec2 movingUv = vUv * uNoiseScale;
-  movingUv.x += uTime * uNoiseSpeed;
-  movingUv.y += sin(uTime * 0.07) * 0.25;
+  // Three-octave world-space cloud bands — patches, voids, rolling structure.
+  vec2 wx = vWorldPosition.xz;
+  float n1 = fbm(wx * 0.055 + vec2(uTime * 0.018, 0.0));
+  float n2 = fbm(wx * 0.13  + vec2(0.0, -uTime * 0.027));
+  float n3 = fbm(wx * 0.31  + vec2(uTime * 0.012, uTime * 0.018));
 
-  float n = fbm(movingUv);
+  float cloud = n1 * 0.62 + n2 * 0.28 + n3 * 0.10;
+  cloud = smoothstep(0.34, 0.68, cloud);
 
-  float softCloud = smoothstep(0.25, 0.85, n);
+  // Dense near floor, fast falloff through knee height.
+  float heightDensity = 1.0 - smoothstep(0.0, 1.05, vWorldPosition.y);
+  heightDensity = pow(max(heightDensity, 0.0), 0.38);
 
+  // Player/lantern pocket — 82% minimum retained, no clean bubble.
   float distToPlayer = distance(vWorldPosition.xz, uPlayerPosition.xz);
-  float playerClear = smoothstep(
+  float clearPlayerFactor = smoothstep(
     uClearRadius,
     uClearRadius + uClearSoftness,
     distToPlayer
   );
+  float playerPocket = mix(uMinimumFogNearPlayer, 1.0, clearPlayerFactor);
 
   float distToLantern = distance(vWorldPosition.xz, uLanternPosition.xz);
-  float lanternClear = smoothstep(
+  float clearLanternFactor = smoothstep(
     uLanternClearRadius,
     uLanternClearRadius + uLanternClearSoftness,
     distToLantern
   );
+  float lanternPocket = mix(uMinimumFogNearPlayer, 1.0, clearLanternFactor);
 
-  float pocketClear = max(playerClear, lanternClear);
+  float pocketClear = max(playerPocket, lanternPocket);
 
+  // Soft UV border so the plane edge never clips visibly.
   float edgeFadeX = smoothstep(0.0, uEdgeFade, vUv.x)
                   * smoothstep(0.0, uEdgeFade, 1.0 - vUv.x);
-
   float edgeFadeY = smoothstep(0.0, uEdgeFade, vUv.y)
                   * smoothstep(0.0, uEdgeFade, 1.0 - vUv.y);
 
-  float alpha = uAlpha * softCloud * pocketClear * edgeFadeX * edgeFadeY;
+  float alpha = uAlpha * cloud * heightDensity * pocketClear * edgeFadeX * edgeFadeY;
 
-  if (alpha < 0.01) discard;
+  if (alpha < 0.003) discard;
 
-  gl_FragColor = vec4(uColor, alpha);
+  // Lantern scatter — fog glows pink near the player, stays dark further away.
+  float localGlow = 1.0 - smoothstep(0.0, 4.5, distToPlayer);
+  localGlow = pow(localGlow, 2.0);
+
+  vec3 glowColor   = vec3(0.85, 0.22, 0.55);
+  vec3 fogColor    = mix(uColor, glowColor, localGlow * 0.55);
+
+  gl_FragColor = vec4(fogColor, alpha);
 }
 `
 
@@ -147,6 +158,9 @@ function createLayerMaterial(
       uClearSoftness: { value: GROUND_FOG_CONFIG.playerClear.softness },
       uLanternClearRadius: { value: GROUND_FOG_CONFIG.lanternClear.radius },
       uLanternClearSoftness: { value: GROUND_FOG_CONFIG.lanternClear.softness },
+      uMinimumFogNearPlayer: {
+        value: GROUND_FOG_CONFIG.playerClear.minimumFogNearPlayer,
+      },
       uEdgeFade: { value: GROUND_FOG_CONFIG.edgeFade },
     },
     vertexShader,
@@ -164,7 +178,8 @@ function createLayerMaterial(
 }
 
 /**
- * Horizontal translucent fog sheets near the floor; animated FBM noise + player/lantern pocket.
+ * Horizontal fog sheets near the floor — main floor coverage layer.
+ * Uses world-space 3-octave FBM with lantern scatter for local pink glow.
  */
 export function GroundFogLayer({ mapBounds }: GroundFogLayerProps) {
   const materialsRef = useRef<ShaderMaterial[]>([])

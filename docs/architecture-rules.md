@@ -47,7 +47,7 @@ Shared **Three.js / R3F presentation** helpers that are not tied to one feature:
 
 - `rendering/materials/` — material factories, shared stylization.
 - `rendering/shaders/` — shader chunks, post-processing experiments (keep performance-first).
-- `rendering/mist/` — **ground fog sheets** (`GroundFogLayer`) plus secondary **particle wisps** (`MistParticles`), tuned with scene fog and player/lantern clear pockets.
+- `rendering/mist/` — **ground fog sheets** (`GroundFogLayer`), **vertical haze curtains** (`VolumetricFogCurtains`), and secondary **particle grain** (`MistParticles`), tuned with scene fog and minimum fog near the player/lantern.
 - Root-level files such as **`Atmosphere.tsx`** — scene-wide lighting / fog / background setup driven by config.
 
 **Rule:** If it is about “how it looks” and reused across scenes, it probably belongs in `rendering/`.

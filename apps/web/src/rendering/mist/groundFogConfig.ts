@@ -1,48 +1,53 @@
 export const GROUND_FOG_CONFIG = {
   enabled: true,
 
-  layers: [
-    {
-      y: 0.035,
-      alpha: 0.32,
-      noiseScale: 7.5,
-      noiseSpeed: 0.025,
-      color: '#4a234f',
-    },
-    {
-      y: 0.09,
-      alpha: 0.24,
-      noiseScale: 11,
-      noiseSpeed: -0.018,
-      color: '#6d3f78',
-    },
-    {
-      y: 0.16,
-      alpha: 0.16,
-      noiseScale: 15,
-      noiseSpeed: 0.014,
-      color: '#9171aa',
-    },
-  ],
-
-  playerClear: {
-    radius: 1.7,
-    softness: 2.4,
-  },
-
-  /** Slightly tighter pocket so the carried lantern reads as cutting haze. */
-  lanternClear: {
-    radius: 1.35,
-    softness: 1.9,
-  },
-
-  edgeFade: 0.08,
-
-  mapPadding: 8,
-
   debug: {
     showGroundFog: true,
     showParticles: true,
     forceHighVisibility: false,
   },
+
+  /**
+   * noiseScale drives world-space FBM sample size in the shader.
+   * Values near 1.0 use the shader's fixed world-scale multipliers (0.055/0.13/0.31)
+   * so config only needs a base multiplier.
+   */
+  layers: [
+    {
+      y: 0.035,
+      alpha: 0.34,
+      noiseScale: 1.0,
+      noiseSpeed: 0.018,
+      color: '#35122f',
+    },
+    {
+      y: 0.12,
+      alpha: 0.22,
+      noiseScale: 1.0,
+      noiseSpeed: -0.014,
+      color: '#42183b',
+    },
+    {
+      y: 0.28,
+      alpha: 0.13,
+      noiseScale: 1.0,
+      noiseSpeed: 0.011,
+      color: '#5a2850',
+    },
+  ],
+
+  playerClear: {
+    radius: 1.0,
+    softness: 3.4,
+    minimumFogNearPlayer: 0.82,
+  },
+
+  lanternClear: {
+    radius: 0.8,
+    softness: 1.8,
+  },
+
+  edgeFade: 0.04,
+
+  mapPadding: 14,
 } as const
