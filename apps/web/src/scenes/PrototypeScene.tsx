@@ -1,19 +1,28 @@
 import { OrbitControls } from '@react-three/drei'
+import { PlayerController } from '../features/player/PlayerController'
 
 /**
- * Minimal render-loop smoke test: lighting, mesh, camera controls.
- * Not gameplay — only proves R3F + Three are wired correctly.
+ * Prototype playground: lighting, ground, orbit inspection, and a keyboard-driven placeholder player.
  */
 export function PrototypeScene() {
   return (
     <>
       <color attach="background" args={['#0b0d12']} />
       <ambientLight intensity={0.35} />
-      <directionalLight position={[4, 6, 3]} intensity={1.1} />
-      <mesh position={[0, 0.5, 0]} castShadow receiveShadow>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#c96b4a" metalness={0.1} roughness={0.65} />
-      </mesh>
+      <directionalLight
+        castShadow
+        position={[4, 6, 3]}
+        intensity={1.1}
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={0.5}
+        shadow-camera-far={40}
+        shadow-camera-left={-10}
+        shadow-camera-right={10}
+        shadow-camera-top={10}
+        shadow-camera-bottom={-10}
+      />
+      <PlayerController spawn={{ x: 0, z: 0 }} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[12, 12]} />
         <meshStandardMaterial color="#1a2030" metalness={0.05} roughness={0.95} />
