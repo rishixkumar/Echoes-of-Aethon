@@ -5,6 +5,7 @@ import { EchoGate } from '../features/world-objects/EchoGate'
 import { ExitZone } from '../features/world-objects/ExitZone'
 import { GeneratedMap, FIXED_PROTOTYPE_MAP } from '../features/map-generation'
 import { Atmosphere } from '../rendering/Atmosphere'
+import { MistParticles } from '../rendering/mist/MistParticles'
 import { PROTOTYPE_SCENE_CONFIG } from './prototypeSceneConfig'
 
 const [spawnX, , spawnZ] = PROTOTYPE_SCENE_CONFIG.playerStart
@@ -18,6 +19,7 @@ export function PrototypeScene() {
   return (
     <>
       <Atmosphere />
+      <MistParticles mapBounds={PROTOTYPE_SCENE_CONFIG.mapBounds} />
       <directionalLight
         castShadow
         position={[mapBounds.minX + 8, 8, 4]}
