@@ -5,6 +5,7 @@ import { useInteractionHudStore } from '../interaction/interactionHudStore'
 import { usePlayerStore } from '../player/playerStore'
 import { useAreaStateStore } from '../world-state/areaStateStore'
 import { useWorldStateStore } from '../world-state/worldStateStore'
+import { getMistHudLines } from '../../rendering/mist/mistParticleConfig'
 
 const panel: CSSProperties = {
   position: 'absolute',
@@ -99,6 +100,11 @@ export function GameHud() {
           <div>Active objects: {activeObjectCount}</div>
           <div>Camera obstruction: {cameraObstruction}</div>
           <div>Top-down blend: {topDownBlend.toFixed(2)}</div>
+          <div style={{ marginTop: 8, color: 'rgba(189, 162, 255, 0.95)' }}>
+            {getMistHudLines().map((line) => (
+              <div key={line}>{line}</div>
+            ))}
+          </div>
         </div>
         {interactionPrompt ? (
           <div

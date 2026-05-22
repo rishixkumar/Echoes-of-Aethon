@@ -19,7 +19,6 @@ export function PrototypeScene() {
   return (
     <>
       <Atmosphere />
-      <MistParticles mapBounds={PROTOTYPE_SCENE_CONFIG.mapBounds} />
       <directionalLight
         castShadow
         position={[mapBounds.minX + 8, 8, 4]}
@@ -34,6 +33,7 @@ export function PrototypeScene() {
         shadow-camera-bottom={mapBounds.minZ - shadowPad}
       />
       <GeneratedMap map={FIXED_PROTOTYPE_MAP} />
+      <MistParticles mapBounds={PROTOTYPE_SCENE_CONFIG.mapBounds} />
       <EchoGate />
       <ExitZone />
       <GameCamera />
