@@ -11,7 +11,7 @@ export const MIST_PARTICLE_CONFIG = {
   yMin: 0.15,
   yMax: 5.8,
   /** Base fragment alpha scale (multiplied by radial falloff + lantern clear). */
-  baseAlpha: 0.055,
+  baseAlpha: 0.16,
   /** Lantern clears mist inside this radius (meters), soft edge to `lanternClearFar`. */
   lanternClearNear: 2.1,
   lanternClearFar: 7.2,

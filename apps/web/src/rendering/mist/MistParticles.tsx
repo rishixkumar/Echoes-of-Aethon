@@ -1,10 +1,10 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import {
-  AdditiveBlending,
   BufferAttribute,
   BufferGeometry,
   Color,
+  NormalBlending,
   ShaderMaterial,
   Vector3,
 } from 'three'
@@ -57,9 +57,9 @@ void main() {
   vWorldPos = pos;
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
   float dist = -mvPosition.z;
-  float baseSize = 320.0 + 140.0 * aSizeJitter;
+  float baseSize = 520.0 + 180.0 * aSizeJitter;
   gl_PointSize = baseSize / max(dist, 0.35);
-  gl_PointSize = clamp(gl_PointSize, 3.0, 110.0);
+  gl_PointSize = clamp(gl_PointSize, 8.0, 140.0);
   gl_Position = projectionMatrix * mvPosition;
 }
 `
@@ -95,6 +95,7 @@ void main() {
     (0.85 + 0.15 * vJitter);
 
   vec3 col = mix(uTintNear, uTintFar, lanternClear * 0.65 + heightBias * 0.2);
+  col = mix(col, vec3(0.42, 0.36, 0.52), 0.22);
   gl_FragColor = vec4(col, alpha);
 }
 `
@@ -147,10 +148,10 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
       uPlayerPos: { value: new Vector3() },
       uLanternPos: { value: new Vector3() },
       uTintNear: {
-        value: new Color('#7a5a8c').multiplyScalar(0.55),
+        value: new Color('#c4b0dc'),
       },
       uTintFar: {
-        value: new Color(ATMOSPHERE_CONFIG.fog.color).multiplyScalar(0.9),
+        value: new Color(ATMOSPHERE_CONFIG.fog.color).lerp(new Color('#ffffff'), 0.22),
       },
       uBaseAlpha: { value: MIST_PARTICLE_CONFIG.baseAlpha },
     }),
@@ -180,7 +181,7 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
   })
 
   return (
-    <points geometry={geometry} frustumCulled={false} renderOrder={-2}>
+    <points args={[geometry]} frustumCulled={false} renderOrder={-2}>
       <shaderMaterial
         ref={materialRef}
         attach="material"
@@ -190,8 +191,9 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
         transparent
         depthWrite={false}
         depthTest
-        blending={AdditiveBlending}
-        toneMapped={false}
+        blending={NormalBlending}
+        toneMapped
+        fog={false}
       />
     </points>
   )
