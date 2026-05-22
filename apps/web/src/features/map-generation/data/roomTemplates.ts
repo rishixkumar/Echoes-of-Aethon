@@ -202,4 +202,11 @@ export const OBJECTIVE_ROOM_TEMPLATE_IDS = [
 
 export const EXIT_ROOM_TEMPLATE_IDS = ['exit-room-basic'] as const
 
+/** Branch rooms reuse connector templates for now. */
+export const BRANCH_ROOM_TEMPLATE_IDS = [
+  'small-connector-room',
+  'wide-connector-room',
+  'long-hall-room',
+] as const
+
 // TODO: When templates repeat, namespace object IDs by placed room id.

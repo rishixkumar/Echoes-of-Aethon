@@ -76,6 +76,7 @@ Added **`PLAYER_MOVEMENT_CONFIG`** (`speed`, `response`, `capsule`, **`bounds`**
 | [`changes.md/README.md`](../changes.md/README.md) | How session logs are organized (also summarized on the root README). |
 | [`changes.md/Iteration 1 - Init Project & Map/`](../changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/) | Timestamped granular notes for Iteration 1 (audit trail). |
 | [`docs/iteration-02-summary.md`](./iteration-02-summary.md) | Iteration 2 closeout: interactions, registry, objectives, atmosphere, math models. |
+| [`docs/iteration-03-summary.md`](./iteration-03-summary.md) | Iteration 3 closeout: data-driven maps, room graph, procedural generators, corridors. |
 | Root [`README.md`](../README.md) | Clone, install, dev/build commands. |
 
 ---

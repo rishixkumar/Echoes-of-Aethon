@@ -1,4 +1,5 @@
 import { generateLinearMap } from './generateLinearMap'
+import { generateBranchingMap } from './generateBranchingMap'
 import { localToWorldPosition } from '../geometry/mapObjectPlacement'
 import type {
   MapDefinition,
@@ -9,14 +10,27 @@ import type {
   RoomTemplate,
 } from './mapTypes'
 
-/** Seed + room count for the active prototype linear map. */
+/** Options for the linear fallback (kept for quick comparison). */
 export const PROTOTYPE_LINEAR_MAP_OPTIONS = {
-  seed: 'dev-seed-02',
+  seed: 'dev-seed',
   roomCount: 5,
 } as const
 
+/** Options for the active branching map. */
+export const PROTOTYPE_BRANCHING_MAP_OPTIONS = {
+  seed: 'branch-dev-seed',
+  mainPathRoomCount: 5,
+  branchCount: 2,
+  maxBranchLength: 2,
+} as const
+
 /** Shared map instance for scene, collision, and interactables. */
-export const FIXED_PROTOTYPE_MAP: MapDefinition = generateLinearMap(
+export const FIXED_PROTOTYPE_MAP: MapDefinition = generateBranchingMap(
+  PROTOTYPE_BRANCHING_MAP_OPTIONS,
+)
+
+/** @deprecated Use FIXED_PROTOTYPE_MAP (now a branching map). Keep for comparison. */
+export const FIXED_LINEAR_MAP: MapDefinition = generateLinearMap(
   PROTOTYPE_LINEAR_MAP_OPTIONS,
 )
 

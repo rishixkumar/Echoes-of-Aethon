@@ -118,14 +118,24 @@ function buildNorthSouthCorridor(
   toTemplate: RoomTemplate,
   fromDir: 'north' | 'south',
 ): ConnectionCorridor | null {
+  // North = negative-Z, South = positive-Z.
+  // The corridor must run between the two outer-wall faces that face each other.
+  //
+  // fromDir === 'north': fromRoom is at larger Z; toRoom is further north (smaller Z).
+  //   gap runs from toRoom's south face (less negative) to fromRoom's north face (more negative).
+  //   minZ = toRoom south outer,  maxZ = fromRoom north outer
+  //
+  // fromDir === 'south': fromRoom is at smaller Z; toRoom is further south (larger Z).
+  //   gap runs from fromRoom's south face to toRoom's north face.
+  //   minZ = fromRoom south outer,  maxZ = toRoom north outer
   const minZ =
-    fromDir === 'north'
-      ? getOuterWallZ(fromRoom, fromTemplate, 'north')
-      : getOuterWallZ(toRoom, toTemplate, 'north')
-  const maxZ =
     fromDir === 'north'
       ? getOuterWallZ(toRoom, toTemplate, 'south')
       : getOuterWallZ(fromRoom, fromTemplate, 'south')
+  const maxZ =
+    fromDir === 'north'
+      ? getOuterWallZ(fromRoom, fromTemplate, 'north')
+      : getOuterWallZ(toRoom, toTemplate, 'north')
   if (maxZ <= minZ) return null
 
   const fromX = roomXSpan(fromRoom, fromTemplate)

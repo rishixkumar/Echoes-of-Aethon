@@ -218,7 +218,8 @@ Manual: WASD + bounds; overlap gate until objective orb activated; **E** toggles
 | [`changes.md/Iteration 2 - Player Interactions/README.md`](../changes.md/Iteration%202%20-%20Player%20Interactions/) | Chronological handoff index + file table |
 | [`docs/architecture-rules.md`](./architecture-rules.md) | Where new systems should live |
 | [`docs/iteration-01-summary.md`](./iteration-01-summary.md) | Movement + repo bootstrap predecessor |
+| [`docs/iteration-03-summary.md`](./iteration-03-summary.md) | Successor: data-driven maps, graph, procedural generators, corridors |
 
 ---
 
-*Iteration 2 is a living milestone: gameplay systems remain prototype-grade; Iteration 3+ is expected to harden contracts (save format, richer interaction graph, content pipeline).*
+*Iteration 2 is a living milestone: gameplay systems remain prototype-grade; Iteration 3+ is expected to harden contracts (save format, richer interaction graph, content pipeline). See [`iteration-03-summary.md`](./iteration-03-summary.md) for the map pipeline milestone.*
