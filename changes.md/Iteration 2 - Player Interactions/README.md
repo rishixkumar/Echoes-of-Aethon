@@ -23,7 +23,7 @@ See the linked file for paths and the original QA checklist.
 - **`scenes/prototypeSceneConfig.ts`** — introduced a shared config for the dev playground (floor size / half-extent). Interactable numbers later moved exclusively to the registry (see C).
 - **`features/player/playerMovementConfig.ts`** — slab bounds driven from **`PROTOTYPE_SCENE_CONFIG.floor.halfExtent`** (with capsule inset). **Fix:** import path must be **`../../scenes/prototypeSceneConfig`** (from `features/player/`), not `../scenes/`.
 - **`features/collision/`** — lightweight **XZ circle** static colliders, **`collisionTypes`**, **`collisionConfig`**, **`staticColliders`**, and **`PlayerController`** collision rejection (revert to previous `x,z` + zero horizontal velocity when overlapping; no physics engine).
-- **`features/interaction/TestInteractable.tsx`** — world-space prompt via Drei **`<Html />`** (initially `transform`), **`.worldPrompt`** styles in **`index.css`**.
+- **`features/interaction/TestInteractable.tsx`** — world labels via shared **`WorldLabel`** (Drei **`<Html sprite />`**); styles under **`.worldLabel`** in **`index.css`**.
 - **`features/ui/GameHud.tsx`** — dev readouts: player **`x, z`** and **near interactable** yes/no.
 
 ### B. Interaction registry (multi-object)
@@ -37,10 +37,13 @@ See the linked file for paths and the original QA checklist.
 
 ### C. World prompt: billboard + tuning
 
-- **`features/interaction/interactionConfig.ts`** — **`worldPrompt`**: `distanceFactor`, `yOffset`; removed obsolete **`defaultRadius`** (radii come from registry entries).
-- **`features/interaction/TestInteractable.tsx`** — Drei **`<Html sprite />`** so the label **faces the active camera** while staying anchored in world space; **`center`** + **`distanceFactor`**. Current tuning: **`distanceFactor: 10`**, **`yOffset: 1.6`** (raise `distanceFactor` toward **12** if the label still feels large).
+- **`features/interaction/TestInteractable.tsx`** — Drei **`<Html sprite />`** via **`WorldLabel`**: **name** + **Press E** when the interactable is the **nearest** in range; per-variant **`distanceFactor`** inside **`WorldLabel`**.
 
-### D. Still explicitly out of scope
+### D. Atmosphere + labels (2026-05-22)
+
+- **[`2026-05-22-atmosphere-world-labels.md`](./2026-05-22-atmosphere-world-labels.md)** — **`rendering/Atmosphere`**, **`atmosphereConfig`**, **`components/world-labels/WorldLabel`**, player overhead tag, scene fog/background.
+
+### E. Still explicitly out of scope
 
 Inventory, dialogue trees, quests, save/load, backend APIs, full physics, NPC/enemy AI.
 
@@ -54,7 +57,7 @@ npm run build -w web
 npm run dev -w web
 ```
 
-**Manual:** WASD + slab bounds; cannot walk through orb colliders; approach either orb → prompts + world “Press E”; orbit camera → world prompt stays camera-facing (**sprite**); **E** activates the **nearest** in-range orb; walk away → prompts clear.
+**Manual:** WASD + slab bounds; cannot walk through orb colliders; approach either orb → HUD line + world **name** + **Press E**; orbit camera → labels stay camera-facing (**sprite**); **E** activates the **nearest** in-range orb; walk away → labels + HUD clear; **Player** tag always visible.
 
 ---
 
@@ -64,11 +67,13 @@ npm run dev -w web
 |------|--------|
 | Registry | `interactableRegistry.ts`, `InteractableRenderer.tsx` |
 | Interaction UX | `TestInteractable.tsx`, `interactionConfig.ts`, `interactionHudStore.ts`, `interactionTypes.ts` |
-| Player | `PlayerController.tsx`, `playerStore.ts`, `playerMovementConfig.ts`, `useKeyboardMovement.ts` |
+| World labels | `components/world-labels/WorldLabel.tsx` |
+| Atmosphere | `rendering/Atmosphere.tsx`, `rendering/atmosphereConfig.ts` |
+| Player | `PlayerController.tsx`, `PlayerAura.tsx`, `playerStore.ts`, `playerMovementConfig.ts`, `useKeyboardMovement.ts` |
 | Collision | `collisionTypes.ts`, `collisionConfig.ts`, `staticColliders.ts` |
 | Scene | `PrototypeScene.tsx`, `prototypeSceneConfig.ts` |
 | HUD | `GameHud.tsx`, `App.tsx`, `index.css` |
 
 ---
 
-*Prepared for git push mid–Iteration 2; holistic `docs/iteration-02-*.md` may follow when you close the iteration.*
+Holistic narrative: [`../../docs/iteration-02-summary.md`](../../docs/iteration-02-summary.md).

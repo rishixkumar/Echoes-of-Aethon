@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber'
+import { ObjectiveHud } from '../features/objectives/ObjectiveHud'
 import { GameHud } from '../features/ui/GameHud'
 import { PrototypeScene } from '../scenes/PrototypeScene'
 
@@ -8,6 +9,7 @@ export function App() {
       <Canvas shadows camera={{ position: [3, 2, 4], fov: 50 }}>
         <PrototypeScene />
       </Canvas>
+      <ObjectiveHud />
       <GameHud />
     </div>
   )

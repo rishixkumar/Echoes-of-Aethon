@@ -4,7 +4,8 @@
 
 This directory stores **human-readable records of structural and tooling changes** made in the repository (for your own documentation and for handoff to other assistants or LLMs).
 
-**Iteration 1 closeout (consolidated narrative):** [`../docs/iteration-01-summary.md`](../docs/iteration-01-summary.md)
+**Iteration 1 closeout (consolidated narrative):** [`../docs/iteration-01-summary.md`](../docs/iteration-01-summary.md)  
+**Iteration 2 closeout (consolidated narrative):** [`../docs/iteration-02-summary.md`](../docs/iteration-02-summary.md)
 
 ## Conventions
 
@@ -14,7 +15,11 @@ This directory stores **human-readable records of structural and tooling changes
 
 ## Latest entry
 
-See [`Iteration 1 - Init Project & Map/2026-05-22-readme-github-sync.md`](Iteration%201%20-%20Init%20Project%20&%20Map/2026-05-22-readme-github-sync.md).
+Iteration 2 narrative: [`../docs/iteration-02-summary.md`](../docs/iteration-02-summary.md). Dated logs: **[`Iteration 2 - Player Interactions/`](Iteration%202%20-%20Player%20Interactions/)**.
+
+## Iteration 2 — dated logs
+
+Session files: **[`Iteration 2 - Player Interactions/`](Iteration%202%20-%20Player%20Interactions/)** (interactions, persistence, objectives, gate, atmosphere, labels, player lighting).
 
 ## Iteration 1 — dated logs
 

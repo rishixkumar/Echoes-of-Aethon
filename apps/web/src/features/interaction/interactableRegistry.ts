@@ -1,21 +1,41 @@
-export const INTERACTABLES = [
+export type InteractableRole = 'objective-orb' | 'echo-orb' | 'lore-object'
+
+export type InteractableDefinition = {
+  id: string
+  label: string
+  role: InteractableRole
+  position: readonly [number, number, number]
+  radius: number
+  colliderRadius: number
+  /** When this objective-orb is activated, complete this objective id. */
+  completesObjectiveId?: string
+  /** World object id that should react (e.g. gate) when this orb activates. */
+  unlocksObjectId?: string
+}
+
+/** Objective / gate orb — only this id should unlock the Echo Gate for the prototype. */
+export const GATE_ORB_ID = 'gate-orb' as const
+
+export const INTERACTABLES: readonly InteractableDefinition[] = [
+  {
+    id: GATE_ORB_ID,
+    label: 'Ancient Echo Orb',
+    role: 'objective-orb',
+    position: [-2, 0.5, -2],
+    radius: 1.5,
+    colliderRadius: 0.75,
+    completesObjectiveId: 'activate-ancient-echo-orb',
+    unlocksObjectId: 'echo-gate',
+  },
   {
     id: 'test-orb',
-    label: 'Ancient Echo Orb',
+    label: 'Echo Orb',
+    role: 'echo-orb',
     position: [2, 0.5, 2],
     radius: 1.5,
     colliderRadius: 0.75,
   },
-  {
-    id: 'test-orb-2',
-    label: 'Shard of Quiet',
-    position: [-2, 0.5, -2],
-    radius: 1.5,
-    colliderRadius: 0.75,
-  },
-] as const
-
-export type InteractableDefinition = (typeof INTERACTABLES)[number]
+]
 
 /** Among entries whose proximity radius contains the player on XZ, return the closest one. */
 export function pickNearestInteractable(

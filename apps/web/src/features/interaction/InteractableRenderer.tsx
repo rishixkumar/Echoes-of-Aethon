@@ -12,6 +12,7 @@ export function InteractableRenderer() {
           key={item.id}
           id={item.id}
           label={item.label}
+          role={item.role}
           position={[item.position[0], item.position[1], item.position[2]]}
           radius={item.radius}
         />

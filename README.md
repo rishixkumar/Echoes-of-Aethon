@@ -7,7 +7,8 @@ Browser-first exploration and puzzle adventure built with **React**, **TypeScrip
 This repository keeps **human-readable session notes** under [`changes.md/`](changes.md/) for documentation and for handoff to other contributors or LLMs.
 
 - **Iteration 1 closeout (narrative):** [`docs/iteration-01-summary.md`](docs/iteration-01-summary.md)
-- **Granular dated entries:** [`changes.md/Iteration 1 - Init Project & Map/`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/)
+- **Iteration 2 closeout (narrative):** [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md)
+- **Granular dated entries:** [`changes.md/Iteration 1 - Init Project & Map/`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/) · [`changes.md/Iteration 2 - Player Interactions/`](changes.md/Iteration%202%20-%20Player%20Interactions/)
 
 ### Conventions
 
@@ -17,7 +18,9 @@ This repository keeps **human-readable session notes** under [`changes.md/`](cha
 
 ### Latest entry
 
-[`changes.md/Iteration 1 - Init Project & Map/2026-05-22-readme-github-sync.md`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/2026-05-22-readme-github-sync.md) — root README / `changes.md` cross-linking and push to GitHub.
+[`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) — Iteration 2 engineering narrative (interactions, atmosphere, formulas). Granular logs: [`changes.md/Iteration 2 - Player Interactions/`](changes.md/Iteration%202%20-%20Player%20Interactions/).
+
+Earlier: [`changes.md/Iteration 1 - Init Project & Map/2026-05-22-readme-github-sync.md`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/2026-05-22-readme-github-sync.md) — root README / `changes.md` cross-linking and push to GitHub.
 
 Browsing the **`changes.md`** folder on GitHub also renders [`changes.md/README.md`](changes.md/README.md) above the file list (same purpose as this section).
 
@@ -48,6 +51,11 @@ Builds the web client for production.
 
 ## Status
 
-Early scaffolding: monorepo structure, Vite bootstrapping, a minimal R3F prototype scene, **camera-relative** player movement on a bounded ground slab. Gameplay systems (Echo Dive, puzzles, persistence) are not implemented yet.
+Monorepo scaffolding, Vite + R3F prototype, **camera-relative** movement, **proximity interactables** with registry + persistent state, **objectives + Echo Gate**, **XZ circle collision**, **atmosphere + labels + player lantern lighting** (Iteration 2). Echo Dive, save/load, and full physics remain future work.
 
-**Iteration 1 summary:** [`docs/iteration-01-summary.md`](docs/iteration-01-summary.md)
+| Iteration | Summary doc |
+|-----------|-------------|
+| 1 | [`docs/iteration-01-summary.md`](docs/iteration-01-summary.md) |
+| 2 | [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) |
+
+**Granular logs:** [`changes.md/`](changes.md/)

@@ -17,7 +17,10 @@ These rules exist so contributors (human or agent) **do not flatten the repo** i
 Put **gameplay and product behavior** that belongs to a specific system or player-facing capability:
 
 - `features/echo-dive/` — Echo transitions, swap orchestration, tuning, player-facing echo UX hooks.
-- `features/world-state/` — Present vs echo world bookkeeping, group visibility rules, synchronization helpers.
+- `features/world-state/` — Present vs echo world bookkeeping, group visibility rules, synchronization helpers (prototype: **activated interactables** store).
+- `features/objectives/` — Objective definitions, completion store, HUD wiring.
+- `features/world-objects/` — Level props that react to world state (e.g. **Echo Gate**).
+- `features/collision/` — Lightweight non-physics collision helpers (prototype: **XZ circles**).
 - `features/player/` — Movement, input, camera contracts (gameplay side, not raw rendering).
 - `features/interaction/` — Interactables, prompts, triggers, puzzle input wiring.
 - `features/puzzles/` — Puzzle graphs, sequencing, completion signaling.
@@ -25,6 +28,10 @@ Put **gameplay and product behavior** that belongs to a specific system or playe
 - `features/ui/` — DOM / React UI: HUD, menus, onboarding.
 
 **Rule:** If removing the feature would delete this code, it belongs in `features/<name>/`.
+
+### `components/`
+
+Small **React** building blocks shared across features (e.g. **world-space labels**), not full gameplay systems.
 
 ### `scenes/`
 
@@ -38,6 +45,7 @@ Shared **Three.js / R3F presentation** helpers that are not tied to one feature:
 
 - `rendering/materials/` — material factories, shared stylization.
 - `rendering/shaders/` — shader chunks, post-processing experiments (keep performance-first).
+- Root-level files such as **`Atmosphere.tsx`** — scene-wide lighting / fog / background setup driven by config.
 
 **Rule:** If it is about “how it looks” and reused across scenes, it probably belongs in `rendering/`.
 

@@ -75,13 +75,16 @@ Added **`PLAYER_MOVEMENT_CONFIG`** (`speed`, `response`, `capsule`, **`bounds`**
 | [`docs/architecture-rules.md`](./architecture-rules.md) | Where new code should live; early non-goals. |
 | [`changes.md/README.md`](../changes.md/README.md) | How session logs are organized (also summarized on the root README). |
 | [`changes.md/Iteration 1 - Init Project & Map/`](../changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/) | Timestamped granular notes for Iteration 1 (audit trail). |
+| [`docs/iteration-02-summary.md`](./iteration-02-summary.md) | Iteration 2 closeout: interactions, registry, objectives, atmosphere, math models. |
 | Root [`README.md`](../README.md) | Clone, install, dev/build commands. |
 
 ---
 
 ## Suggested entry point for Iteration 2
 
-Priority order aligned with the product brief:
+**Implemented:** See the consolidated engineering write-up [`docs/iteration-02-summary.md`](./iteration-02-summary.md) and granular logs under [`changes.md/Iteration 2 - Player Interactions/`](../changes.md/Iteration%202%20-%20Player%20Interactions/).
+
+Original priority sketch (still directionally valid for later work):
 
 1. **Interaction system** (look / use / trigger) — first real “world talks back” loop.
 2. Begin separating **inspection camera** from a future **gameplay camera** once interactions need framing.

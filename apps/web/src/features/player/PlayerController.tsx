@@ -1,6 +1,8 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { Group, Vector3 } from 'three'
+import { WorldLabel } from '../../components/world-labels/WorldLabel'
+import { PlayerAura } from './PlayerAura'
 import { xzOverlapsAnyStaticCollider } from '../collision/staticColliders'
 import { PLAYER_MOVEMENT_CONFIG } from './playerMovementConfig'
 import { usePlayerStore } from './playerStore'
@@ -102,16 +104,17 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
       position={[spawn?.x ?? 0, 0, spawn?.z ?? 0]}
       name="player"
     >
+      <PlayerAura />
       <mesh position={[0, height / 2, 0]} castShadow receiveShadow>
         <capsuleGeometry args={[r, len, 8, 16]} />
         <meshStandardMaterial
-          color="#d7e6ff"
-          metalness={0.05}
-          roughness={0.55}
-          emissive="#1b2a44"
-          emissiveIntensity={0.25}
+          color="#aeb8c8"
+          emissive="#4d6f88"
+          emissiveIntensity={0.15}
+          roughness={0.65}
         />
       </mesh>
+      <WorldLabel text="Player" variant="player" position={[0, 1.65, 0]} />
     </group>
   )
 }

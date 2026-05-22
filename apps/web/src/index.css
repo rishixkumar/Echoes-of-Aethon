@@ -14,7 +14,7 @@ body,
 
 body {
   overflow: hidden;
-  background: #0b0d12;
+  background: #09030f;
   color: #e8ecf5;
   font-family:
     system-ui,
@@ -26,17 +26,39 @@ body {
     sans-serif;
 }
 
-/* Drei <Html /> world-space prompts (see TestInteractable) */
-.worldPrompt {
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(12, 16, 26, 0.82);
-  border: 1px solid rgba(191, 232, 255, 0.35);
-  color: #dff6ff;
-  font-size: 12px;
-  font-weight: 600;
+/* Drei <Html sprite /> labels — see WorldLabel.tsx */
+.worldLabel {
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  font-weight: 600;
+  line-height: 1.2;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+}
+
+.worldLabel--name {
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 9px;
+  background: rgba(24, 8, 23, 0.78);
+  border: 1px solid rgba(200, 140, 190, 0.28);
+  color: #e8c8e0;
+}
+
+.worldLabel--prompt {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  background: rgba(14, 12, 28, 0.85);
+  border: 1px solid rgba(180, 220, 255, 0.28);
+  color: #d4eefc;
+}
+
+.worldLabel--player {
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 9px;
+  background: rgba(18, 28, 48, 0.82);
+  border: 1px solid rgba(160, 200, 255, 0.32);
+  color: #c8dcff;
 }

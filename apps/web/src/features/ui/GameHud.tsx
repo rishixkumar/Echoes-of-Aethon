@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { isNearAnyInteractable } from '../interaction/interactableRegistry'
 import { useInteractionHudStore } from '../interaction/interactionHudStore'
 import { usePlayerStore } from '../player/playerStore'
+import { useWorldStateStore } from '../world-state/worldStateStore'
 
 const panel: CSSProperties = {
   position: 'absolute',
@@ -26,6 +27,8 @@ export function GameHud() {
   const interactionPrompt = useInteractionHudStore((s) => s.interactionPrompt)
   const [px, , pz] = usePlayerStore((s) => s.playerPosition)
   const nearInteractable = isNearAnyInteractable(px, pz)
+  const activatedMap = useWorldStateStore((s) => s.activatedInteractables)
+  const activeObjectCount = Object.values(activatedMap).filter(Boolean).length
 
   return (
     <div style={panel}>
@@ -46,6 +49,7 @@ export function GameHud() {
           Player: x {px.toFixed(2)}, z {pz.toFixed(2)}
         </div>
         <div>Near interactable: {nearInteractable ? 'yes' : 'no'}</div>
+        <div>Active objects: {activeObjectCount}</div>
       </div>
       {interactionPrompt ? (
         <div
