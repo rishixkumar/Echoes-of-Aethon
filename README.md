@@ -8,7 +8,7 @@ This repository keeps **human-readable session notes** under [`changes.md/`](cha
 
 - **Iteration 1 closeout (narrative):** [`docs/iteration-01-summary.md`](docs/iteration-01-summary.md)
 - **Iteration 2 closeout (narrative):** [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md)
-- **Granular dated entries:** [`changes.md/Iteration 1 - Init Project & Map/`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/) · [`changes.md/Iteration 2 - Player Interactions/`](changes.md/Iteration%202%20-%20Player%20Interactions/)
+- **Granular dated entries:** [`changes.md/Iteration 1 - Init Project & Map/`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/) · [`changes.md/Iteration 2 - Player Interactions/`](changes.md/Iteration%202%20-%20Player%20Interactions/) · [`changes.md/Iteration 3 - Map Creation/`](changes.md/Iteration%203%20-%20Map%20Creation/)
 
 ### Conventions
 
@@ -18,9 +18,10 @@ This repository keeps **human-readable session notes** under [`changes.md/`](cha
 
 ### Latest entry
 
-[`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) — Iteration 2 engineering narrative (interactions, atmosphere, formulas). Granular logs: [`changes.md/Iteration 2 - Player Interactions/`](changes.md/Iteration%202%20-%20Player%20Interactions/).
+- [`changes.md/Iteration 3 - Map Creation/2026-05-22-camera-system-milestone.md`](changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-camera-system-milestone.md) — gameplay camera (FP/TP, zoom, transitions, wall collision, top-down fallback).
+- [`changes.md/Iteration 3 - Map Creation/2026-05-22-prototype-room-map-slice.md`](changes.md/Iteration%203%20-%20Map%20Creation/2026-05-22-prototype-room-map-slice.md) — hand-built prototype room, rect wall collision, exit zone, **Area Complete**.
 
-Earlier: [`changes.md/Iteration 1 - Init Project & Map/2026-05-22-readme-github-sync.md`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/2026-05-22-readme-github-sync.md) — root README / `changes.md` cross-linking and push to GitHub.
+Earlier: [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) — Iteration 2 engineering narrative. [`changes.md/Iteration 1 - Init Project & Map/2026-05-22-readme-github-sync.md`](changes.md/Iteration%201%20-%20Init%20Project%20&%20Map/2026-05-22-readme-github-sync.md) — README / `changes.md` cross-linking.
 
 Browsing the **`changes.md`** folder on GitHub also renders [`changes.md/README.md`](changes.md/README.md) above the file list (same purpose as this section).
 
@@ -51,11 +52,12 @@ Builds the web client for production.
 
 ## Status
 
-Monorepo scaffolding, Vite + R3F prototype, **camera-relative** movement, **proximity interactables** with registry + persistent state, **objectives + Echo Gate**, **XZ circle collision**, **atmosphere + labels + player lantern lighting** (Iteration 2). Echo Dive, save/load, and full physics remain future work.
+Monorepo scaffolding, Vite + R3F prototype, **camera-relative** movement, **gameplay-driven camera** (FP/TP, zoom, smooth mode transitions, segment wall collision, severe-obstruction top-down blend), **proximity interactables**, **objectives + Echo Gate**, **hand-built 14×18 prototype room** with **rect + circle XZ collision**, **exit zone + Area Complete HUD** (Iteration 3). Iteration 2 systems (atmosphere, labels, lantern) preserved. Echo Dive, save/load, and full physics remain future work.
 
-| Iteration | Summary doc |
-|-----------|-------------|
+| Iteration | Summary / logs |
+|-----------|----------------|
 | 1 | [`docs/iteration-01-summary.md`](docs/iteration-01-summary.md) |
 | 2 | [`docs/iteration-02-summary.md`](docs/iteration-02-summary.md) |
+| 3 (in progress) | [`changes.md/Iteration 3 - Map Creation/`](changes.md/Iteration%203%20-%20Map%20Creation/) |
 
 **Granular logs:** [`changes.md/`](changes.md/)

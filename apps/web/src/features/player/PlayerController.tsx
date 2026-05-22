@@ -1,6 +1,8 @@
 import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
-import { Group, Vector3 } from 'three'
+import { useMemo, useRef, useState } from 'react'
+import { Group, Mesh, Vector3 } from 'three'
+import { useCameraStore } from '../camera/cameraStore'
+import { isPlayerBodyVisible } from '../camera/useGameCamera'
 import { WorldLabel } from '../../components/world-labels/WorldLabel'
 import { PlayerAura } from './PlayerAura'
 import { xzOverlapsAnyStaticCollider } from '../collision/staticColliders'
@@ -14,46 +16,37 @@ type PlayerControllerProps = Readonly<{
 }>
 
 /**
- * Keyboard-driven placeholder avatar (no physics engine).
- * Movement is camera-relative on the XZ plane for sensible steering with OrbitControls.
- * World limits: axis-aligned slab clamp + static XZ circle colliders (no physics engine).
+ * Keyboard-driven avatar: W/S along camera yaw, A/D handled in `GameCamera` input (yaw).
+ * Slab clamp + static XZ colliders unchanged.
  */
 export function PlayerController({ spawn }: PlayerControllerProps) {
   const groupRef = useRef<Group>(null)
   const axes = useKeyboardMovement()
+  const bodyRef = useRef<Mesh>(null)
+  const [playerLabelVisible, setPlayerLabelVisible] = useState(true)
+  const prevBodyVisible = useRef(true)
 
   const velocity = useRef(new Vector3())
   const scratch = useMemo(
     () => ({
       forward: new Vector3(),
-      right: new Vector3(),
       desired: new Vector3(),
-      flatViewDir: new Vector3(),
     }),
     [],
   )
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const group = groupRef.current
     if (!group) return
 
-    const { forward, right, desired, flatViewDir } = scratch
+    const { forward, desired } = scratch
+    const yaw = useCameraStore.getState().yaw
+    group.rotation.y = yaw
 
-    state.camera.getWorldDirection(flatViewDir)
-    flatViewDir.y = 0
-    if (flatViewDir.lengthSq() < 1e-8) {
-      flatViewDir.set(0, 0, -1)
-    } else {
-      flatViewDir.normalize()
-    }
+    forward.set(Math.sin(yaw), 0, Math.cos(yaw))
 
-    right.copy(flatViewDir).cross(state.camera.up).normalize()
-    forward.copy(flatViewDir)
-
-    const { x, z } = axes.current
-    desired.set(0, 0, 0)
-    desired.addScaledVector(right, x)
-    desired.addScaledVector(forward, -z)
+    const { forward: fIn } = axes.current
+    desired.set(forward.x * fIn, 0, forward.z * fIn)
 
     if (desired.lengthSq() > 1e-8) desired.normalize()
 
@@ -91,6 +84,14 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
     usePlayerStore
       .getState()
       .setPlayerPosition([group.position.x, group.position.y, group.position.z])
+
+    const showBody = isPlayerBodyVisible()
+    const mesh = bodyRef.current
+    if (mesh) mesh.visible = showBody
+    if (showBody !== prevBodyVisible.current) {
+      prevBodyVisible.current = showBody
+      setPlayerLabelVisible(showBody)
+    }
   })
 
   const { capsule } = PLAYER_MOVEMENT_CONFIG
@@ -102,10 +103,17 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
     <group
       ref={groupRef}
       position={[spawn?.x ?? 0, 0, spawn?.z ?? 0]}
+      rotation={[0, Math.PI, 0]}
       name="player"
     >
       <PlayerAura />
-      <mesh position={[0, height / 2, 0]} castShadow receiveShadow>
+      <mesh
+        ref={bodyRef}
+        position={[0, height / 2, 0]}
+        castShadow
+        receiveShadow
+        visible
+      >
         <capsuleGeometry args={[r, len, 8, 16]} />
         <meshStandardMaterial
           color="#aeb8c8"
@@ -114,7 +122,12 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
           roughness={0.65}
         />
       </mesh>
-      <WorldLabel text="Player" variant="player" position={[0, 1.65, 0]} />
+      <WorldLabel
+        text="Player"
+        variant="player"
+        position={[0, 1.65, 0]}
+        visible={playerLabelVisible}
+      />
     </group>
   )
 }

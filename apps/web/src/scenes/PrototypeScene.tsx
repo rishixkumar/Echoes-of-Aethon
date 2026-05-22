@@ -1,14 +1,16 @@
-import { OrbitControls } from '@react-three/drei'
 import { InteractableRenderer } from '../features/interaction/InteractableRenderer'
+import { GameCamera } from '../features/camera/GameCamera'
 import { PlayerController } from '../features/player/PlayerController'
 import { EchoGate } from '../features/world-objects/EchoGate'
+import { ExitZone } from '../features/world-objects/ExitZone'
+import { PrototypeRoom } from '../features/world-objects/PrototypeRoom'
 import { Atmosphere } from '../rendering/Atmosphere'
 import { PROTOTYPE_SCENE_CONFIG } from './prototypeSceneConfig'
 
-const floorSize = PROTOTYPE_SCENE_CONFIG.floor.size
+const [spawnX, , spawnZ] = PROTOTYPE_SCENE_CONFIG.playerStart
 
 /**
- * Prototype playground: lighting, ground, gate, orbit inspection, player movement, interactables.
+ * Prototype playground: room, lighting, gate, exit zone, gameplay camera, player, interactables.
  */
 export function PrototypeScene() {
   return (
@@ -22,19 +24,17 @@ export function PrototypeScene() {
         shadow-mapSize-height={2048}
         shadow-camera-near={0.5}
         shadow-camera-far={40}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
+        shadow-camera-left={-12}
+        shadow-camera-right={12}
+        shadow-camera-top={12}
+        shadow-camera-bottom={-12}
       />
+      <PrototypeRoom />
       <EchoGate />
-      <PlayerController spawn={{ x: 0, z: 0 }} />
+      <ExitZone />
+      <GameCamera />
+      <PlayerController spawn={{ x: spawnX, z: spawnZ }} />
       <InteractableRenderer />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[floorSize, floorSize]} />
-        <meshStandardMaterial color="#211020" roughness={0.75} />
-      </mesh>
-      <OrbitControls makeDefault enableDamping dampingFactor={0.08} />
     </>
   )
 }

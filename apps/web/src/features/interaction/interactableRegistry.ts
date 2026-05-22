@@ -1,3 +1,5 @@
+import { PROTOTYPE_ROOM_CONFIG } from '../../scenes/prototypeSceneConfig'
+
 export type InteractableRole = 'objective-orb' | 'echo-orb' | 'lore-object'
 
 export type InteractableDefinition = {
@@ -16,12 +18,14 @@ export type InteractableDefinition = {
 /** Objective / gate orb — only this id should unlock the Echo Gate for the prototype. */
 export const GATE_ORB_ID = 'gate-orb' as const
 
+const orbPos = PROTOTYPE_ROOM_CONFIG.objectiveOrb.position
+
 export const INTERACTABLES: readonly InteractableDefinition[] = [
   {
     id: GATE_ORB_ID,
     label: 'Ancient Echo Orb',
     role: 'objective-orb',
-    position: [-2, 0.5, -2],
+    position: [orbPos[0], orbPos[1], orbPos[2]],
     radius: 1.5,
     colliderRadius: 0.75,
     completesObjectiveId: 'activate-ancient-echo-orb',
@@ -31,7 +35,7 @@ export const INTERACTABLES: readonly InteractableDefinition[] = [
     id: 'test-orb',
     label: 'Echo Orb',
     role: 'echo-orb',
-    position: [2, 0.5, 2],
+    position: [4.5, 0.5, -3],
     radius: 1.5,
     colliderRadius: 0.75,
   },

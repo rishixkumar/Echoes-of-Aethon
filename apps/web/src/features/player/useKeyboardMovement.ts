@@ -1,27 +1,24 @@
 import { useEffect, useRef } from 'react'
 
 export type KeyboardMovementAxes = Readonly<{
-  x: number
-  z: number
+  /** +1 forward (W), −1 back (S), 0 idle. */
+  forward: number
 }>
 
 /**
- * Tracks WASD on the window without re-rendering every keypress.
- * Clears state on blur/visibility loss to avoid "stuck" keys while alt-tabbing.
+ * Tracks W/S for forward/back (camera system uses A/D for yaw elsewhere).
+ * Clears state on blur/visibility loss to avoid stuck keys while alt-tabbing.
  */
 export function useKeyboardMovement() {
-  const axes = useRef<KeyboardMovementAxes>({ x: 0, z: 0 })
+  const axes = useRef<KeyboardMovementAxes>({ forward: 0 })
 
   useEffect(() => {
     const pressed = new Set<string>()
 
     const sync = () => {
-      const left = pressed.has('KeyA') ? 1 : 0
-      const right = pressed.has('KeyD') ? 1 : 0
       const up = pressed.has('KeyW') ? 1 : 0
       const down = pressed.has('KeyS') ? 1 : 0
-
-      axes.current = { x: right - left, z: down - up }
+      axes.current = { forward: up - down }
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -63,5 +60,5 @@ export function useKeyboardMovement() {
 }
 
 function isMovementCode(code: string) {
-  return code === 'KeyW' || code === 'KeyA' || code === 'KeyS' || code === 'KeyD'
+  return code === 'KeyW' || code === 'KeyS'
 }

@@ -15,7 +15,15 @@ This directory stores **human-readable records of structural and tooling changes
 
 ## Latest entry
 
+Iteration 3 — **Camera:** **[`Iteration 3 - Map Creation/2026-05-22-camera-system-milestone.md`](Iteration%203%20-%20Map%20Creation/2026-05-22-camera-system-milestone.md)**.
+
+Iteration 3 — **Map slice:** **[`Iteration 3 - Map Creation/2026-05-22-prototype-room-map-slice.md`](Iteration%203%20-%20Map%20Creation/2026-05-22-prototype-room-map-slice.md)**.
+
 Iteration 2 narrative: [`../docs/iteration-02-summary.md`](../docs/iteration-02-summary.md). Dated logs: **[`Iteration 2 - Player Interactions/`](Iteration%202%20-%20Player%20Interactions/)**.
+
+## Iteration 3 — dated logs
+
+Session files: **[`Iteration 3 - Map Creation/`](Iteration%203%20-%20Map%20Creation/)** — prototype room / exit slice, gameplay camera (FP/TP, collision, transitions). See folder [`README.md`](Iteration%203%20-%20Map%20Creation/README.md) for the file index.
 
 ## Iteration 2 — dated logs
 

@@ -22,6 +22,7 @@ Put **gameplay and product behavior** that belongs to a specific system or playe
 - `features/world-objects/` — Level props that react to world state (e.g. **Echo Gate**).
 - `features/collision/` — Lightweight non-physics collision helpers (prototype: **XZ circles**).
 - `features/player/` — Movement, input, camera contracts (gameplay side, not raw rendering).
+- `features/camera/` — Gameplay camera rig (modes, zoom, yaw), driven from player/world state.
 - `features/interaction/` — Interactables, prompts, triggers, puzzle input wiring.
 - `features/puzzles/` — Puzzle graphs, sequencing, completion signaling.
 - `features/audio/` — Audio behavior: buses, transitions, gameplay-triggered cues (not raw asset bytes).

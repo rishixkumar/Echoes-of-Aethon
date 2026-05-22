@@ -1,11 +1,11 @@
 /**
  * Player movement tuning for the prototype (no physics engine).
  *
- * Slab bounds use `PROTOTYPE_SCENE_CONFIG.floor.halfExtent`, inset by the capsule radius.
+ * Slab bounds use `PROTOTYPE_SCENE_CONFIG.floor` half-extents, inset by the capsule radius.
  */
 import { PROTOTYPE_SCENE_CONFIG } from '../../scenes/prototypeSceneConfig'
 
-const { halfExtent } = PROTOTYPE_SCENE_CONFIG.floor
+const { halfExtentX, halfExtentZ } = PROTOTYPE_SCENE_CONFIG.floor
 const CAPSULE_RADIUS = 0.35
 const CAPSULE_LENGTH = 0.9
 
@@ -17,9 +17,9 @@ export const PLAYER_MOVEMENT_CONFIG = {
     length: CAPSULE_LENGTH,
   },
   bounds: {
-    minX: -halfExtent + CAPSULE_RADIUS,
-    maxX: halfExtent - CAPSULE_RADIUS,
-    minZ: -halfExtent + CAPSULE_RADIUS,
-    maxZ: halfExtent - CAPSULE_RADIUS,
+    minX: -halfExtentX + CAPSULE_RADIUS,
+    maxX: halfExtentX - CAPSULE_RADIUS,
+    minZ: -halfExtentZ + CAPSULE_RADIUS,
+    maxZ: halfExtentZ - CAPSULE_RADIUS,
   },
 } as const
