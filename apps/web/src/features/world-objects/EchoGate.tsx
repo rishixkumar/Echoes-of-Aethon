@@ -8,6 +8,8 @@ const gate = PROTOTYPE_SCENE_CONFIG.gate
  * Simple gate that disappears when the objective orb (`ancient-echo-orb`) is activated.
  */
 export function EchoGate() {
+  if (!gate) return null
+
   const open = useWorldStateStore((s) =>
     s.isInteractableActivated(GATE_ORB_ID),
   )

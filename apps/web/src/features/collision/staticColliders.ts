@@ -36,6 +36,8 @@ const INTERACTABLE_COLLIDERS: readonly CircleCollider[] = INTERACTABLES.map(
 )
 
 function getGateRectCollider(): RectCollider | null {
+  if (!gateCfg) return null
+
   if (
     useWorldStateStore.getState().isInteractableActivated(gateCfg.unlocksWhen)
   ) {

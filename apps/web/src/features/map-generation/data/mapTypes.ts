@@ -67,6 +67,7 @@ export type RoomConnection = {
   toDirection: Direction
   isLocked?: boolean
   gateId?: string
+  requiredObjectiveId?: string
 }
 
 export type MapDefinition = {

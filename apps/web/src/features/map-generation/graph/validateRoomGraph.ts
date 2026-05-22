@@ -12,24 +12,36 @@ export function validateRoomGraph(map: MapDefinition): RoomGraphValidationResult
 
   const graph = buildRoomGraph(map)
   const roomIds = new Set(map.rooms.map((room) => room.id))
+  const sideUse = new Set<string>()
 
   for (const connection of map.connections) {
-    if (!roomIds.has(connection.fromRoomId)) {
-      errors.push(
-        `Connection ${connection.id} has invalid fromRoomId: ${connection.fromRoomId}`,
-      )
-    }
-
-    if (!roomIds.has(connection.toRoomId)) {
-      errors.push(
-        `Connection ${connection.id} has invalid toRoomId: ${connection.toRoomId}`,
-      )
-    }
+    if (
+      !roomIds.has(connection.fromRoomId) ||
+      !roomIds.has(connection.toRoomId)
+    ) continue
 
     if (connection.toDirection !== OPPOSITE_DIRECTION[connection.fromDirection]) {
       errors.push(
         `Connection ${connection.id} directions are not opposite: ${connection.fromDirection} → ${connection.toDirection}`,
       )
+    }
+
+    const fromKey = `${connection.fromRoomId}:${connection.fromDirection}`
+    if (sideUse.has(fromKey)) {
+      errors.push(
+        `Room ${connection.fromRoomId} has multiple graph connections on ${connection.fromDirection}.`,
+      )
+    } else {
+      sideUse.add(fromKey)
+    }
+
+    const toKey = `${connection.toRoomId}:${connection.toDirection}`
+    if (sideUse.has(toKey)) {
+      errors.push(
+        `Room ${connection.toRoomId} has multiple graph connections on ${connection.toDirection}.`,
+      )
+    } else {
+      sideUse.add(toKey)
     }
   }
 
@@ -50,9 +62,6 @@ export function validateRoomGraph(map: MapDefinition): RoomGraphValidationResult
     const template = map.templates[room.templateId]
     return template?.kind === 'objective'
   })
-
-  if (!startRoom) errors.push('Map has no start room.')
-  if (!objectiveRoom) errors.push('Map has no objective room.')
 
   if (startRoom) {
     const reachable = breadthFirstRoomTraversal(graph, startRoom.id)

@@ -1,6 +1,6 @@
 import {
   FIXED_PROTOTYPE_MAP,
-  getWorldObjectPosition,
+  findMapObject,
 } from '../map-generation'
 
 export type InteractableRole = 'objective-orb' | 'echo-orb' | 'lore-object'
@@ -18,39 +18,47 @@ export type InteractableDefinition = {
   unlocksObjectId?: string
 }
 
-/** Objective orb in the objective room — unlocks the north gate. */
+/** Objective orb in the objective room — unlocks optional gate if present. */
 export const GATE_ORB_ID = 'ancient-echo-orb' as const
 
-const orbWorldPosition = getWorldObjectPosition(
+const ancientOrb = findMapObject(
   FIXED_PROTOTYPE_MAP,
-  'room-objective',
-  GATE_ORB_ID,
+  (object) => object.id === GATE_ORB_ID,
+)
+const regularOrb = findMapObject(
+  FIXED_PROTOTYPE_MAP,
+  (object) => object.type === 'echo-orb',
 )
 
-if (!orbWorldPosition) {
-  throw new Error('Fixed map missing ancient-echo-orb in room-objective')
+if (!ancientOrb) {
+  throw new Error('Generated map missing ancient-echo-orb')
 }
 
-export const INTERACTABLES: readonly InteractableDefinition[] = [
+const interactables: InteractableDefinition[] = [
   {
     id: GATE_ORB_ID,
     label: 'Ancient Echo Orb',
     role: 'objective-orb',
-    position: orbWorldPosition,
+    position: ancientOrb.worldPosition,
     radius: 1.5,
     colliderRadius: 0.75,
     completesObjectiveId: 'activate-ancient-echo-orb',
     unlocksObjectId: 'prototype-gate',
   },
-  {
-    id: 'test-orb',
+]
+
+if (regularOrb) {
+  interactables.push({
+    id: regularOrb.object.id,
     label: 'Echo Orb',
     role: 'echo-orb',
-    position: [4.5, 0.5, -3],
+    position: regularOrb.worldPosition,
     radius: 1.5,
     colliderRadius: 0.75,
-  },
-]
+  })
+}
+
+export const INTERACTABLES: readonly InteractableDefinition[] = interactables
 
 /** Among entries whose proximity radius contains the player on XZ, return the closest one. */
 export function pickNearestInteractable(

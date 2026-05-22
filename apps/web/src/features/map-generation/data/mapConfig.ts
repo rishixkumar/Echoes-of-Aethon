@@ -16,4 +16,7 @@ export const MAP_CONFIG = {
   doorway: {
     defaultWidth: 3,
   },
+  connection: {
+    defaultCorridorLength: 3,
+  },
 } as const

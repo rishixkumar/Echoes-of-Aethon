@@ -10,8 +10,10 @@ export * from './data/roomTemplates'
 export * from './data/mapBounds'
 export * from './data/mapSceneUtils'
 export * from './data/generateFixedMap'
+export * from './data/generateLinearMap'
 export * from './data/validateMapDefinition'
 export * from './data/mapConnections'
+export * from './data/seededRandom'
 
 // --- graph (pure TS; no React / Three / stores) ---
 export * from './graph/roomGraphTypes'

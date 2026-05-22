@@ -12,7 +12,7 @@ const { mapBounds } = PROTOTYPE_SCENE_CONFIG
 const shadowPad = 4
 
 /**
- * Prototype playground: three-room map, lighting, gate, exit zone, camera, player, interactables.
+ * Prototype playground: seeded linear map, lighting, optional gate, exit zone, camera, player, interactables.
  */
 export function PrototypeScene() {
   return (

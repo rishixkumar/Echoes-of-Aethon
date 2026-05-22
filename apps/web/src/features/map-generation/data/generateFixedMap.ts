@@ -3,6 +3,7 @@ import type { MapDefinition } from './mapTypes'
 import { assertValidMapDefinition } from './validateMapDefinition'
 import { buildRoomGraph, describeRoomGraph } from '../graph/roomGraph'
 import { validateRoomGraph } from '../graph/validateRoomGraph'
+import { assertSeededRandomDeterminism } from './seededRandom'
 
 export function generateFixedPrototypeMap(): MapDefinition {
   const map: MapDefinition = {
@@ -49,6 +50,8 @@ export function generateFixedPrototypeMap(): MapDefinition {
   assertValidMapDefinition(map)
 
   if (import.meta.env.DEV) {
+    assertSeededRandomDeterminism()
+
     const graphResult = validateRoomGraph(map)
 
     if (!graphResult.valid) {

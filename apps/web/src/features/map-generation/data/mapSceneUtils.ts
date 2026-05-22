@@ -1,21 +1,37 @@
-import { generateFixedPrototypeMap } from './generateFixedMap'
+import { generateLinearMap } from './generateLinearMap'
 import { localToWorldPosition } from '../geometry/mapObjectPlacement'
 import type {
   MapDefinition,
   PlacedRoom,
+  RoomKind,
   RoomObjectDefinition,
   RoomObjectType,
   RoomTemplate,
 } from './mapTypes'
 
-/** Shared fixed map instance for scene, collision, and interactables. */
-export const FIXED_PROTOTYPE_MAP: MapDefinition = generateFixedPrototypeMap()
+/** Seed + room count for the active prototype linear map. */
+export const PROTOTYPE_LINEAR_MAP_OPTIONS = {
+  seed: 'dev-seed-02',
+  roomCount: 5,
+} as const
+
+/** Shared map instance for scene, collision, and interactables. */
+export const FIXED_PROTOTYPE_MAP: MapDefinition = generateLinearMap(
+  PROTOTYPE_LINEAR_MAP_OPTIONS,
+)
 
 export function getPlacedRoom(
   map: MapDefinition,
   roomId: string,
 ): PlacedRoom | undefined {
   return map.rooms.find((r) => r.id === roomId)
+}
+
+export function findPlacedRoomByKind(
+  map: MapDefinition,
+  kind: RoomKind,
+): PlacedRoom | undefined {
+  return map.rooms.find((room) => map.templates[room.templateId]?.kind === kind)
 }
 
 export function getRoomTemplate(
@@ -30,6 +46,35 @@ export function findRoomObject(
   predicate: (obj: RoomObjectDefinition) => boolean,
 ): RoomObjectDefinition | undefined {
   return template.objects.find(predicate)
+}
+
+export function findMapObject(
+  map: MapDefinition,
+  predicate: (obj: RoomObjectDefinition) => boolean,
+):
+  | {
+      room: PlacedRoom
+      template: RoomTemplate
+      object: RoomObjectDefinition
+      worldPosition: [number, number, number]
+    }
+  | undefined {
+  for (const room of map.rooms) {
+    const template = getRoomTemplate(map, room)
+    if (!template) continue
+
+    const object = findRoomObject(template, predicate)
+    if (!object) continue
+
+    return {
+      room,
+      template,
+      object,
+      worldPosition: localToWorldPosition(object.position, room),
+    }
+  }
+
+  return undefined
 }
 
 export function getWorldObjectPosition(
@@ -61,10 +106,7 @@ export function getWorldObjectByType(
 }
 
 export function getPlayerStartWorld(map: MapDefinition): [number, number, number] {
-  const startRoom = map.rooms.find((r) => {
-    const t = map.templates[r.templateId]
-    return t?.kind === 'start'
-  })
+  const startRoom = findPlacedRoomByKind(map, 'start')
   if (!startRoom) return [0, 0, 0]
   const template = map.templates[startRoom.templateId]
   const local = template?.playerStart ?? ([0, 0, 0] as const)
