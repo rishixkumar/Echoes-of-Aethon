@@ -28,7 +28,13 @@ export function WorldLabel({
 
   return (
     <Html position={[...position]} center sprite distanceFactor={distanceFactor}>
-      <div className={`worldLabel worldLabel--${variant}`}>{text}</div>
+      <div
+        className={`worldLabel worldLabel--${variant}${
+          variant === 'player' ? ' player-label' : ''
+        }`}
+      >
+        {text}
+      </div>
     </Html>
   )
 }
