@@ -1,48 +1,22 @@
 import { INTERACTABLES } from '../interaction/interactableRegistry'
-import { PROTOTYPE_ROOM_CONFIG, PROTOTYPE_SCENE_CONFIG } from '../../scenes/prototypeSceneConfig'
+import { PROTOTYPE_SCENE_CONFIG } from '../../scenes/prototypeSceneConfig'
+import { getRoomWallColliders, getConnectionCorridorColliders } from '../map-generation/mapCollision'
+import { FIXED_PROTOTYPE_MAP } from '../map-generation/mapSceneUtils'
 import { useWorldStateStore } from '../world-state/worldStateStore'
 import { COLLISION_CONFIG } from './collisionConfig'
 import type { CircleCollider, RectCollider, StaticCollider } from './collisionTypes'
 
 const gateCfg = PROTOTYPE_SCENE_CONFIG.gate
-const [floorW, floorD] = PROTOTYPE_ROOM_CONFIG.floor.size
-const { height: wallH, thickness: t } = PROTOTYPE_ROOM_CONFIG.walls
-const halfW = floorW / 2
-const halfD = floorD / 2
 
-/** Wall segments on XZ (collision). `PrototypeRoom` meshes use `walls.visualOverlap` for slightly longer visuals. */
-const ROOM_WALL_RECTS: readonly RectCollider[] = [
-  {
-    id: 'wall-back',
-    kind: 'rect',
-    position: [0, wallH / 2, halfD],
-    size: [floorW, t],
-  },
-  {
-    id: 'wall-left',
-    kind: 'rect',
-    position: [-halfW, wallH / 2, 0],
-    size: [t, floorD],
-  },
-  {
-    id: 'wall-right',
-    kind: 'rect',
-    position: [halfW, wallH / 2, 0],
-    size: [t, floorD],
-  },
-  {
-    id: 'wall-front-left',
-    kind: 'rect',
-    position: [-4.25, wallH / 2, -halfD],
-    size: [5.5, t],
-  },
-  {
-    id: 'wall-front-right',
-    kind: 'rect',
-    position: [4.25, wallH / 2, -halfD],
-    size: [5.5, t],
-  },
-] as const
+const GENERATED_ROOM_WALL_RECTS: readonly RectCollider[] =
+  FIXED_PROTOTYPE_MAP.rooms.flatMap((room) => {
+    const template = FIXED_PROTOTYPE_MAP.templates[room.templateId]
+    if (!template) return []
+    return getRoomWallColliders(FIXED_PROTOTYPE_MAP, room, template)
+  })
+
+const CONNECTION_CORRIDOR_WALL_RECTS: readonly RectCollider[] =
+  getConnectionCorridorColliders(FIXED_PROTOTYPE_MAP)
 
 /** XZ circles for interactable bodies (always active). */
 const INTERACTABLE_COLLIDERS: readonly CircleCollider[] = INTERACTABLES.map(
@@ -76,7 +50,10 @@ function getGateRectCollider(): RectCollider | null {
 
 /** Walls + closed gate rects — for third-person camera obstruction (XZ footprints). */
 export function getThirdPersonCameraObstructionRects(): RectCollider[] {
-  const rects: RectCollider[] = [...ROOM_WALL_RECTS]
+  const rects: RectCollider[] = [
+    ...GENERATED_ROOM_WALL_RECTS,
+    ...CONNECTION_CORRIDOR_WALL_RECTS,
+  ]
   const gate = getGateRectCollider()
   if (gate) rects.push(gate)
   return rects
@@ -85,7 +62,10 @@ export function getThirdPersonCameraObstructionRects(): RectCollider[] {
 /** Colliders used by the player this frame (walls + optional gate + interactables). */
 export function getCollidersForPlayer(): StaticCollider[] {
   const gate = getGateRectCollider()
-  const rects: StaticCollider[] = [...ROOM_WALL_RECTS]
+  const rects: StaticCollider[] = [
+    ...GENERATED_ROOM_WALL_RECTS,
+    ...CONNECTION_CORRIDOR_WALL_RECTS,
+  ]
   if (gate) rects.push(gate)
   return [...rects, ...INTERACTABLE_COLLIDERS]
 }

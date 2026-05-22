@@ -3,14 +3,17 @@ import { GameCamera } from '../features/camera/GameCamera'
 import { PlayerController } from '../features/player/PlayerController'
 import { EchoGate } from '../features/world-objects/EchoGate'
 import { ExitZone } from '../features/world-objects/ExitZone'
-import { PrototypeRoom } from '../features/world-objects/PrototypeRoom'
+import { GeneratedMap } from '../features/map-generation/GeneratedMap'
+import { FIXED_PROTOTYPE_MAP } from '../features/map-generation/mapSceneUtils'
 import { Atmosphere } from '../rendering/Atmosphere'
 import { PROTOTYPE_SCENE_CONFIG } from './prototypeSceneConfig'
 
 const [spawnX, , spawnZ] = PROTOTYPE_SCENE_CONFIG.playerStart
+const { mapBounds } = PROTOTYPE_SCENE_CONFIG
+const shadowPad = 4
 
 /**
- * Prototype playground: room, lighting, gate, exit zone, gameplay camera, player, interactables.
+ * Prototype playground: three-room map, lighting, gate, exit zone, camera, player, interactables.
  */
 export function PrototypeScene() {
   return (
@@ -18,18 +21,18 @@ export function PrototypeScene() {
       <Atmosphere />
       <directionalLight
         castShadow
-        position={[4, 6, 3]}
+        position={[mapBounds.minX + 8, 8, 4]}
         intensity={1.1}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-near={0.5}
-        shadow-camera-far={40}
-        shadow-camera-left={-12}
-        shadow-camera-right={12}
-        shadow-camera-top={12}
-        shadow-camera-bottom={-12}
+        shadow-camera-far={50}
+        shadow-camera-left={mapBounds.minX - shadowPad}
+        shadow-camera-right={mapBounds.maxX + shadowPad}
+        shadow-camera-top={mapBounds.maxZ + shadowPad}
+        shadow-camera-bottom={mapBounds.minZ - shadowPad}
       />
-      <PrototypeRoom />
+      <GeneratedMap map={FIXED_PROTOTYPE_MAP} />
       <EchoGate />
       <ExitZone />
       <GameCamera />

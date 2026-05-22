@@ -5,7 +5,7 @@ import { PROTOTYPE_SCENE_CONFIG } from '../../scenes/prototypeSceneConfig'
 const gate = PROTOTYPE_SCENE_CONFIG.gate
 
 /**
- * Simple gate that disappears when the objective orb (`gate-orb`) is activated.
+ * Simple gate that disappears when the objective orb (`ancient-echo-orb`) is activated.
  */
 export function EchoGate() {
   const open = useWorldStateStore((s) =>

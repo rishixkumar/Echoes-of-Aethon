@@ -16,6 +16,7 @@ These rules exist so contributors (human or agent) **do not flatten the repo** i
 
 Put **gameplay and product behavior** that belongs to a specific system or player-facing capability:
 
+- `features/map-generation/` — Map definitions, room templates, fixed/procedural assembly (`GeneratedMap` / `GeneratedRoom`), and future collider derivation from templates.
 - `features/echo-dive/` — Echo transitions, swap orchestration, tuning, player-facing echo UX hooks.
 - `features/world-state/` — Present vs echo world bookkeeping, group visibility rules, synchronization helpers (prototype: **activated interactables** store).
 - `features/objectives/` — Objective definitions, completion store, HUD wiring.

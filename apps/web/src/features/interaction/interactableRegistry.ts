@@ -1,4 +1,7 @@
-import { PROTOTYPE_ROOM_CONFIG } from '../../scenes/prototypeSceneConfig'
+import {
+  FIXED_PROTOTYPE_MAP,
+  getWorldObjectPosition,
+} from '../map-generation/mapSceneUtils'
 
 export type InteractableRole = 'objective-orb' | 'echo-orb' | 'lore-object'
 
@@ -15,21 +18,29 @@ export type InteractableDefinition = {
   unlocksObjectId?: string
 }
 
-/** Objective / gate orb — only this id should unlock the Echo Gate for the prototype. */
-export const GATE_ORB_ID = 'gate-orb' as const
+/** Objective orb in the objective room — unlocks the north gate. */
+export const GATE_ORB_ID = 'ancient-echo-orb' as const
 
-const orbPos = PROTOTYPE_ROOM_CONFIG.objectiveOrb.position
+const orbWorldPosition = getWorldObjectPosition(
+  FIXED_PROTOTYPE_MAP,
+  'room-objective',
+  GATE_ORB_ID,
+)
+
+if (!orbWorldPosition) {
+  throw new Error('Fixed map missing ancient-echo-orb in room-objective')
+}
 
 export const INTERACTABLES: readonly InteractableDefinition[] = [
   {
     id: GATE_ORB_ID,
     label: 'Ancient Echo Orb',
     role: 'objective-orb',
-    position: [orbPos[0], orbPos[1], orbPos[2]],
+    position: orbWorldPosition,
     radius: 1.5,
     colliderRadius: 0.75,
     completesObjectiveId: 'activate-ancient-echo-orb',
-    unlocksObjectId: 'echo-gate',
+    unlocksObjectId: 'prototype-gate',
   },
   {
     id: 'test-orb',

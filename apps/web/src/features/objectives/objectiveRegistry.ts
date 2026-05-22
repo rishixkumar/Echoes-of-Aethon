@@ -4,6 +4,6 @@ export const OBJECTIVES: readonly ObjectiveDefinition[] = [
   {
     id: 'activate-ancient-echo-orb',
     title: 'Activate the Ancient Echo Orb',
-    requiredInteractableId: 'gate-orb',
+    requiredInteractableId: 'ancient-echo-orb',
   },
 ]

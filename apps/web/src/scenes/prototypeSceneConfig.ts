@@ -1,69 +1,94 @@
 /**
- * Dev playground: hand-built prototype room + gate + exit (Iteration 3).
- * Interactable rows: `features/interaction/interactableRegistry.ts`.
+ * Scene-facing config projected from the fixed three-room map template data.
+ * Numeric layout source of truth: `ROOM_TEMPLATES` + `generateFixedPrototypeMap()`.
  */
+import {
+  FIXED_PROTOTYPE_MAP,
+  getPlayerStartWorld,
+  getWorldObjectByType,
+  getWorldObjectPosition,
+} from '../features/map-generation/mapSceneUtils'
+import { getMapBounds } from '../features/map-generation/mapBounds'
 
-/** Floor outer size (X × Z) — single source for wall / gate alignment. */
-const PROTOTYPE_FLOOR_W = 14
-const PROTOTYPE_FLOOR_D = 18
+const OBJECTIVE_ROOM_ID = 'room-objective'
 
-const halfD = PROTOTYPE_FLOOR_D / 2
-const wallT = 0.35
-const gateW = 3
-const gateH = 2.2
-const gateD = 0.35
+const gateBundle = getWorldObjectByType(
+  FIXED_PROTOTYPE_MAP,
+  OBJECTIVE_ROOM_ID,
+  'gate',
+)
+const exitBundle = getWorldObjectByType(
+  FIXED_PROTOTYPE_MAP,
+  OBJECTIVE_ROOM_ID,
+  'exit-zone',
+)
+const orbWorld = getWorldObjectPosition(
+  FIXED_PROTOTYPE_MAP,
+  OBJECTIVE_ROOM_ID,
+  'ancient-echo-orb',
+)
+const playerStart = getPlayerStartWorld(FIXED_PROTOTYPE_MAP)
+const mapBounds = getMapBounds(FIXED_PROTOTYPE_MAP)
 
-/** Front wall slab center Z (same as `PrototypeRoom` `frontZ`). */
-const frontWallCenterZ = -halfD
+if (!gateBundle || !exitBundle || !orbWorld) {
+  throw new Error(
+    'Fixed prototype map missing objective-room gate, exit zone, or ancient-echo-orb',
+  )
+}
 
-/**
- * Gate sits in the doorway: back face flush with the room-facing side of the front wall slab
- * (avoids a visible void between jambs and gate). Depth extends slightly into the room (+Z).
- */
-const gateCenterZ = frontWallCenterZ + wallT / 2 + gateD / 2
+const gateWorld = getWorldObjectPosition(
+  FIXED_PROTOTYPE_MAP,
+  OBJECTIVE_ROOM_ID,
+  gateBundle.object.id,
+)!
+const exitWorld = getWorldObjectPosition(
+  FIXED_PROTOTYPE_MAP,
+  OBJECTIVE_ROOM_ID,
+  exitBundle.object.id,
+)!
 
+/** @deprecated Prefer map templates; kept for legacy imports during migration. */
 export const PROTOTYPE_ROOM_CONFIG = {
   floor: {
-    size: [PROTOTYPE_FLOOR_W, PROTOTYPE_FLOOR_D] as const,
+    size: [14, 18] as const,
     position: [0, 0, 0] as const,
   },
   walls: {
-    height: 2.5,
-    thickness: wallT,
-    color: '#1b1020',
-    /** Extra length on each visual wall segment (± along its long axis) to seal mesh seams. */
-    visualOverlap: 0.08,
+    height: gateBundle.template.wallHeight,
+    thickness: gateBundle.template.wallThickness,
+    color: gateBundle.template.wallColor,
+    visualOverlap: gateBundle.template.visualOverlap,
   },
   gate: {
-    id: 'echo-gate',
-    position: [0, 1.1, gateCenterZ] as const,
-    size: [gateW, gateH, gateD] as const,
+    id: gateBundle.object.id,
+    position: gateWorld,
+    size: [...(gateBundle.object.size ?? ([3, 2.2, 0.35] as const))] as const,
   },
   exitZone: {
-    id: 'prototype-exit-zone',
-    position: [0, 0.03, -8.3] as const,
-    size: [3.5, 0.05, 1.2] as const,
+    id: exitBundle.object.id,
+    position: exitWorld,
+    size: [...(exitBundle.object.size ?? ([3.5, 0.05, 1.2] as const))] as const,
   },
-  playerStart: [0, 0, 3] as const,
+  playerStart,
   objectiveOrb: {
-    id: 'gate-orb',
-    position: [-3, 0.5, 1] as const,
+    id: 'ancient-echo-orb',
+    position: orbWorld,
   },
 } as const
 
-/** Scene-facing config derived from `PROTOTYPE_ROOM_CONFIG` for movement, collision, and assembly. */
 export const PROTOTYPE_SCENE_CONFIG = {
+  mapBounds,
   floor: {
-    halfExtentX: PROTOTYPE_ROOM_CONFIG.floor.size[0] / 2,
-    halfExtentZ: PROTOTYPE_ROOM_CONFIG.floor.size[1] / 2,
-    sizeX: PROTOTYPE_ROOM_CONFIG.floor.size[0],
-    sizeZ: PROTOTYPE_ROOM_CONFIG.floor.size[1],
+    halfExtentX: (mapBounds.maxX - mapBounds.minX) / 2,
+    halfExtentZ: (mapBounds.maxZ - mapBounds.minZ) / 2,
+    sizeX: mapBounds.maxX - mapBounds.minX,
+    sizeZ: mapBounds.maxZ - mapBounds.minZ,
   },
   gate: {
     id: PROTOTYPE_ROOM_CONFIG.gate.id,
     position: [...PROTOTYPE_ROOM_CONFIG.gate.position] as const,
     size: [...PROTOTYPE_ROOM_CONFIG.gate.size] as const,
-    unlocksWhen: 'gate-orb' as const,
+    unlocksWhen: 'ancient-echo-orb' as const,
   },
   exitZone: PROTOTYPE_ROOM_CONFIG.exitZone,
   playerStart: PROTOTYPE_ROOM_CONFIG.playerStart,
