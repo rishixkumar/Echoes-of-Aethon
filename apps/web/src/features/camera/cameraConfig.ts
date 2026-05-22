@@ -4,11 +4,16 @@ export const CAMERA_CONFIG = {
   zoomInKey: 'Comma',
   zoomOutKey: 'Period',
 
+  /** Max yaw rate (rad/s) when A/D held; actual rate eases toward this. */
   rotationSpeed: 2.4,
+
+  /** Cap `delta` for turn integration to avoid spikes after tab switch / hitch. */
+  maxTurnDeltaSeconds: 0.05,
 
   smoothing: {
     position: 14,
-    rotation: 16,
+    /** Angular-velocity ease: higher = snappier spin-up/down; lower = smoother. */
+    rotation: 9,
     fov: 10,
   },
 

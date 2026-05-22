@@ -7,7 +7,7 @@ import { resolveThirdPersonCameraCollision } from './cameraCollision'
 import { CAMERA_CONFIG } from './cameraConfig'
 import { useCameraInput } from './cameraInput'
 import { useCameraStore } from './cameraStore'
-import { lerpAngle, smoothstep } from './useGameCamera'
+import { smoothstep } from './useGameCamera'
 
 const idealPos = new Vector3()
 const idealLook = new Vector3()
@@ -157,16 +157,19 @@ export function GameCamera() {
     fov: 58,
   })
   const hudPrev = useRef({ label: 'none' as 'none' | 'mild' | 'severe', blend: 0 })
+  /** Smoothed yaw velocity (rad/s); eases toward ±rotationSpeed or 0 for fluid turns. */
+  const yawOmega = useRef(0)
 
   useFrame((_, delta) => {
     const turn = turnRef.current
     const st = useCameraStore.getState()
-    const yawTargetNext =
-      st.yawTarget + turn * CAMERA_CONFIG.rotationSpeed * delta
-    const alphaR =
-      1 - Math.exp(-CAMERA_CONFIG.smoothing.rotation * delta)
-    const yawNext = lerpAngle(st.yaw, yawTargetNext, alphaR)
-    useCameraStore.getState().setYawSmoothing(yawNext, yawTargetNext)
+    const dt = Math.min(delta, CAMERA_CONFIG.maxTurnDeltaSeconds)
+    const omegaDesired = turn * CAMERA_CONFIG.rotationSpeed
+    const alphaOmega =
+      1 - Math.exp(-CAMERA_CONFIG.smoothing.rotation * dt)
+    yawOmega.current += (omegaDesired - yawOmega.current) * alphaOmega
+    const yawNext = st.yaw + yawOmega.current * dt
+    useCameraStore.getState().setYawSmoothing(yawNext, yawNext)
 
     const [px, py, pz] = usePlayerStore.getState().playerPosition
     const mode = useCameraStore.getState().mode
