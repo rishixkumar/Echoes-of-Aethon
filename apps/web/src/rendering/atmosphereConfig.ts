@@ -1,12 +1,12 @@
 export const ATMOSPHERE_CONFIG = {
-  background: '#09030f',
+  background: '#07020c',
   fog: {
-    color: '#180817',
-    near: 4,
-    far: 16,
+    color: '#140614',
+    near: 2.8,
+    far: 42,
   },
   ambientLight: {
-    intensity: 0.7,
+    intensity: 0.48,
   },
   hemisphereLight: {
     skyColor: '#9b3f7a',

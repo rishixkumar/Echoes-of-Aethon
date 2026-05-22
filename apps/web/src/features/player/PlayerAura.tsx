@@ -16,10 +16,10 @@ export function PlayerAura() {
       Math.sin(clock.elapsedTime * 17) * 0.04
 
     if (coreLightRef.current) {
-      coreLightRef.current.intensity = 4.5 * flicker
+      coreLightRef.current.intensity = 5.4 * flicker
     }
     if (fillLightRef.current) {
-      fillLightRef.current.intensity = 1.4 * flicker
+      fillLightRef.current.intensity = 1.75 * flicker
     }
   })
 
@@ -29,17 +29,17 @@ export function PlayerAura() {
         ref={coreLightRef}
         position={[0, 1.15, 0]}
         color="#ffd6a3"
-        intensity={4.5}
-        distance={5.5}
-        decay={1.35}
+        intensity={5.4}
+        distance={6.25}
+        decay={1.28}
       />
       <pointLight
         ref={fillLightRef}
         position={[0, 0.45, 0]}
         color="#ff8fd6"
-        intensity={1.4}
-        distance={8}
-        decay={1.8}
+        intensity={1.75}
+        distance={9}
+        decay={1.65}
       />
       <mesh position={[0.38, 0.95, 0.25]}>
         <sphereGeometry args={[0.09, 16, 16]} />
