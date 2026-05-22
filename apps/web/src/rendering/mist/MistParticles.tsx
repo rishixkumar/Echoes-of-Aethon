@@ -5,6 +5,7 @@ import {
   BufferGeometry,
   Color,
   NormalBlending,
+  Points,
   ShaderMaterial,
   Vector3,
 } from 'three'
@@ -21,7 +22,6 @@ type MapBoundsXZ = Readonly<{
 }>
 
 type MistParticlesProps = Readonly<{
-  /** World-space floor bounds; defaults from scene config when omitted at call site. */
   mapBounds: MapBoundsXZ
 }>
 
@@ -39,12 +39,21 @@ void main() {
   vJitter = aSizeJitter;
   vec3 pos = position;
 
-  float t = uTime * 0.38;
-  float w1 = sin(t + aPhase) * 0.55 + sin(t * 0.61 + aPhase * 2.17) * 0.35;
-  float w2 = cos(t * 0.47 + aPhase * 1.33) * 0.55;
+  float t = uTime * 1.05;
+  float t2 = uTime * 0.63;
+
+  float w1 =
+    sin(t + aPhase) * 0.62 +
+    sin(t2 * 1.37 + aPhase * 2.31) * 0.38 +
+    sin(t * 0.29 + aPhase * 4.1) * 0.22;
+  float w2 =
+    cos(t * 0.88 + aPhase * 1.11) * 0.58 +
+    cos(t2 * 1.09 + aPhase * 1.73) * 0.34;
+  float w3 = sin(t * 0.41 + aPhase * 2.9) * 0.55 + cos(t2 + aPhase * 3.7) * 0.25;
+
   pos.x += w1 * ${MIST_PARTICLE_CONFIG.windAmplitudeXZ.toFixed(4)};
   pos.z += w2 * ${MIST_PARTICLE_CONFIG.windAmplitudeXZ.toFixed(4)};
-  pos.y += sin(t * 0.52 + aPhase * 1.9) * ${MIST_PARTICLE_CONFIG.windAmplitudeY.toFixed(4)};
+  pos.y += w3 * ${MIST_PARTICLE_CONFIG.windAmplitudeY.toFixed(4)};
 
   vec3 toP = pos - uPlayerPos;
   float pr = length(toP.xz);
@@ -56,10 +65,10 @@ void main() {
 
   vWorldPos = pos;
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-  float dist = -mvPosition.z;
-  float baseSize = 520.0 + 180.0 * aSizeJitter;
-  gl_PointSize = baseSize / max(dist, 0.35);
-  gl_PointSize = clamp(gl_PointSize, 8.0, 140.0);
+  float dist = max(-mvPosition.z, 1.15);
+  float baseSize = 110.0 + 55.0 * aSizeJitter;
+  gl_PointSize = baseSize / dist;
+  gl_PointSize = clamp(gl_PointSize, 2.0, 42.0);
   gl_Position = projectionMatrix * mvPosition;
 }
 `
@@ -69,33 +78,44 @@ uniform vec3 uLanternPos;
 uniform vec3 uTintNear;
 uniform vec3 uTintFar;
 uniform float uBaseAlpha;
+uniform float uTime;
 
 varying vec3 vWorldPos;
 varying float vJitter;
+
+float hash31(vec3 p) {
+  return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453123);
+}
 
 void main() {
   vec2 q = gl_PointCoord - vec2(0.5);
   float r = length(q);
   if (r > 0.5) discard;
 
-  float soft = 1.0 - smoothstep(0.18, 0.5, r);
-  soft = pow(soft, 1.35);
+  float soft = 1.0 - smoothstep(0.12, 0.48, r);
+  soft = pow(max(soft, 0.001), 1.15);
+
+  vec3 q3 = vWorldPos * vec3(0.35, 0.9, 0.35) + vec3(uTime * 0.11, uTime * 0.07, uTime * 0.09);
+  float n = mix(hash31(q3), hash31(q3.yzx * 1.37 + 19.1), 0.5);
+  float n2 = mix(hash31(q3 * 2.7 + 3.0), hash31(q3.zxy * 1.9), 0.5);
+  float wisp = 0.45 + 0.55 * n * (0.65 + 0.35 * n2);
 
   float dl = distance(vWorldPos, uLanternPos);
   float lanternClear = smoothstep(${MIST_PARTICLE_CONFIG.lanternClearNear.toFixed(
     4,
   )}, ${MIST_PARTICLE_CONFIG.lanternClearFar.toFixed(4)}, dl);
 
-  float heightBias = smoothstep(0.0, 4.5, vWorldPos.y);
+  float heightBias = smoothstep(0.0, 2.8, vWorldPos.y);
   float alpha =
     uBaseAlpha *
     soft *
-    (0.12 + 0.88 * lanternClear) *
-    (0.75 + 0.25 * heightBias) *
-    (0.85 + 0.15 * vJitter);
+    wisp *
+    (0.18 + 0.82 * lanternClear) *
+    (0.82 + 0.18 * heightBias) *
+    (0.88 + 0.12 * vJitter);
 
-  vec3 col = mix(uTintNear, uTintFar, lanternClear * 0.65 + heightBias * 0.2);
-  col = mix(col, vec3(0.42, 0.36, 0.52), 0.22);
+  vec3 col = mix(uTintNear, uTintFar, lanternClear * 0.55 + heightBias * 0.18);
+  col *= vec3(0.72, 0.68, 0.82);
   gl_FragColor = vec4(col, alpha);
 }
 `
@@ -106,6 +126,7 @@ function buildMistGeometry(bounds: MapBoundsXZ): BufferGeometry {
     paddingXZ,
     yMin,
     yMax,
+    yBiasExponent,
   } = MIST_PARTICLE_CONFIG
 
   const minX = bounds.minX - paddingXZ
@@ -119,7 +140,8 @@ function buildMistGeometry(bounds: MapBoundsXZ): BufferGeometry {
 
   for (let i = 0; i < count; i += 1) {
     positions[i * 3] = minX + Math.random() * (maxX - minX)
-    positions[i * 3 + 1] = yMin + Math.random() ** 1.15 * (yMax - yMin)
+    const h = Math.random() ** yBiasExponent
+    positions[i * 3 + 1] = yMin + h * (yMax - yMin)
     positions[i * 3 + 2] = minZ + Math.random() * (maxZ - minZ)
     phases[i] = Math.random() * Math.PI * 2
     jitters[i] = Math.random()
@@ -133,36 +155,38 @@ function buildMistGeometry(bounds: MapBoundsXZ): BufferGeometry {
 }
 
 /**
- * Soft additive mist particles across the map. Fragment shader thins mist near the
- * computed lantern position so the carried light reads as cutting through haze; vertex
- * shader nudges samples away from the player for a subtle “parting” effect.
+ * Ground-hugging mist: small billboard points, slow multi-frequency wind,
+ * hash noise for wispy alpha, lantern thinning, player push. Not true volumetrics—
+ * tuned to read as haze rather than “snow” on screen.
  */
 export function MistParticles({ mapBounds }: MistParticlesProps) {
-  const materialRef = useRef<ShaderMaterial>(null)
+  const pointsRef = useRef<Points>(null)
 
   const geometry = useMemo(() => buildMistGeometry(mapBounds), [mapBounds])
+
+  const fogColor = useMemo(
+    () => new Color(ATMOSPHERE_CONFIG.fog.color),
+    [],
+  )
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uPlayerPos: { value: new Vector3() },
       uLanternPos: { value: new Vector3() },
-      uTintNear: {
-        value: new Color('#c4b0dc'),
-      },
-      uTintFar: {
-        value: new Color(ATMOSPHERE_CONFIG.fog.color).lerp(new Color('#ffffff'), 0.22),
-      },
+      uTintNear: { value: new Color('#4a3558') },
+      uTintFar: { value: fogColor.clone().multiplyScalar(0.92) },
       uBaseAlpha: { value: MIST_PARTICLE_CONFIG.baseAlpha },
     }),
-    [],
+    [fogColor],
   )
 
   const scratchLantern = useMemo(() => new Vector3(), [])
 
   useFrame(({ clock }) => {
-    const mat = materialRef.current
-    if (!mat) return
+    const points = pointsRef.current
+    const mat = points?.material
+    if (!mat || !(mat instanceof ShaderMaterial)) return
 
     const [px, py, pz] = usePlayerStore.getState().playerPosition
     const yaw = useCameraStore.getState().yaw
@@ -175,15 +199,15 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
       pz - lanternLocal.x * sin + lanternLocal.z * cos,
     )
 
-    mat.uniforms.uTime.value = clock.elapsedTime
+    const t = clock.elapsedTime
+    mat.uniforms.uTime.value = t
     mat.uniforms.uPlayerPos.value.set(px, py, pz)
     mat.uniforms.uLanternPos.value.copy(scratchLantern)
   })
 
   return (
-    <points args={[geometry]} frustumCulled={false} renderOrder={-2}>
+    <points ref={pointsRef} args={[geometry]} frustumCulled={false}>
       <shaderMaterial
-        ref={materialRef}
         attach="material"
         uniforms={uniforms}
         vertexShader={vertexShader}
@@ -192,7 +216,7 @@ export function MistParticles({ mapBounds }: MistParticlesProps) {
         depthWrite={false}
         depthTest
         blending={NormalBlending}
-        toneMapped
+        toneMapped={false}
         fog={false}
       />
     </points>
