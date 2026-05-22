@@ -15,6 +15,8 @@ This directory stores **human-readable records of structural and tooling changes
 
 ## Latest entry
 
+Iteration 3 — **Prototype room wall-gap postmortem:** **[`Iteration 3 - Map Creation/2026-05-22-prototype-room-wall-gap-postmortem.md`](Iteration%203%20-%20Map%20Creation/2026-05-22-prototype-room-wall-gap-postmortem.md)**.
+
 Iteration 3 — **Camera:** **[`Iteration 3 - Map Creation/2026-05-22-camera-system-milestone.md`](Iteration%203%20-%20Map%20Creation/2026-05-22-camera-system-milestone.md)**.
 
 Iteration 3 — **Map slice:** **[`Iteration 3 - Map Creation/2026-05-22-prototype-room-map-slice.md`](Iteration%203%20-%20Map%20Creation/2026-05-22-prototype-room-map-slice.md)**.

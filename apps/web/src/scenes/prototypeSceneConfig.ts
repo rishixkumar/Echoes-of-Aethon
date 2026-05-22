@@ -2,22 +2,42 @@
  * Dev playground: hand-built prototype room + gate + exit (Iteration 3).
  * Interactable rows: `features/interaction/interactableRegistry.ts`.
  */
+
+/** Floor outer size (X × Z) — single source for wall / gate alignment. */
+const PROTOTYPE_FLOOR_W = 14
+const PROTOTYPE_FLOOR_D = 18
+
+const halfD = PROTOTYPE_FLOOR_D / 2
+const wallT = 0.35
+const gateW = 3
+const gateH = 2.2
+const gateD = 0.35
+
+/** Front wall slab center Z (same as `PrototypeRoom` `frontZ`). */
+const frontWallCenterZ = -halfD
+
+/**
+ * Gate sits in the doorway: back face flush with the room-facing side of the front wall slab
+ * (avoids a visible void between jambs and gate). Depth extends slightly into the room (+Z).
+ */
+const gateCenterZ = frontWallCenterZ + wallT / 2 + gateD / 2
+
 export const PROTOTYPE_ROOM_CONFIG = {
   floor: {
-    size: [14, 18] as const,
+    size: [PROTOTYPE_FLOOR_W, PROTOTYPE_FLOOR_D] as const,
     position: [0, 0, 0] as const,
   },
   walls: {
     height: 2.5,
-    thickness: 0.35,
+    thickness: wallT,
     color: '#1b1020',
     /** Extra length on each visual wall segment (± along its long axis) to seal mesh seams. */
     visualOverlap: 0.08,
   },
   gate: {
     id: 'echo-gate',
-    position: [0, 1.1, -7.2] as const,
-    size: [3, 2.2, 0.35] as const,
+    position: [0, 1.1, gateCenterZ] as const,
+    size: [gateW, gateH, gateD] as const,
   },
   exitZone: {
     id: 'prototype-exit-zone',
