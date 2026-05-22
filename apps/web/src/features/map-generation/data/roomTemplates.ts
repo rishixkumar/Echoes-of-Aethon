@@ -1,6 +1,6 @@
 import type { RoomTemplate } from './mapTypes'
 import { MAP_CONFIG } from './mapConfig'
-import { getDoorwayGatePosition } from './mapDoorwayPlacement'
+import { getDoorwayGatePosition } from '../geometry/mapDoorwayPlacement'
 
 const w = MAP_CONFIG.room.defaultWidth
 const d = MAP_CONFIG.room.defaultDepth

@@ -1,4 +1,4 @@
-import type { MapDefinition, PlacedRoom, RoomTemplate } from './mapTypes'
+import type { MapDefinition, PlacedRoom, RoomTemplate } from '../data/mapTypes'
 import { wallFromBounds } from './mapWallGeometry'
 import {
   getOuterWallX,

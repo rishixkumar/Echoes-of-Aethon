@@ -1,8 +1,8 @@
-import type { RectCollider } from '../collision/collisionTypes'
-import { getEffectiveDoorwaysForRoom } from './mapConnections'
-import { buildConnectionCorridors } from './mapRoomConnectors'
-import { buildWallSlabsForRoom } from './mapRoomWallSlabs'
-import type { GeneratedMapCollider, MapDefinition, PlacedRoom, RoomTemplate } from './mapTypes'
+import type { RectCollider } from '../../collision/collisionTypes'
+import { getEffectiveDoorwaysForRoom } from '../data/mapConnections'
+import { buildConnectionCorridors } from '../geometry/mapRoomConnectors'
+import { buildWallSlabsForRoom } from '../geometry/mapRoomWallSlabs'
+import type { GeneratedMapCollider, MapDefinition, PlacedRoom, RoomTemplate } from '../data/mapTypes'
 
 /**
  * Build axis-aligned wall rects for a placed room using **effective** doorways

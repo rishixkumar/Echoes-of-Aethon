@@ -1,4 +1,4 @@
-import type { DoorwayDefinition, RoomTemplate } from './mapTypes'
+import type { DoorwayDefinition, RoomTemplate } from '../data/mapTypes'
 import { getDoorwayForDirection } from './mapDoorwayUtils'
 import { wallFromBounds } from './mapWallGeometry'
 

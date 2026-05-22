@@ -1,5 +1,5 @@
-import type { DoorwayDefinition, PlacedRoom, RoomTemplate } from './mapTypes'
-import { localToWorldPosition } from './mapObjectPlacement'
+import type { DoorwayDefinition, PlacedRoom, RoomTemplate } from '../data/mapTypes'
+import { localToWorldPosition } from '../geometry/mapObjectPlacement'
 
 type GeneratedDoorwayProps = Readonly<{
   room: PlacedRoom

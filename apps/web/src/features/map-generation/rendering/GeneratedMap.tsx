@@ -1,7 +1,7 @@
-import type { MapDefinition } from './mapTypes'
+import type { MapDefinition } from '../data/mapTypes'
 import { GeneratedConnectionBridge } from './GeneratedConnectionBridge'
 import { GeneratedRoom } from './GeneratedRoom'
-import { buildConnectionCorridors } from './mapRoomConnectors'
+import { buildConnectionCorridors } from '../geometry/mapRoomConnectors'
 
 export type GeneratedMapProps = Readonly<{
   map: MapDefinition

@@ -1,7 +1,10 @@
 import { INTERACTABLES } from '../interaction/interactableRegistry'
 import { PROTOTYPE_SCENE_CONFIG } from '../../scenes/prototypeSceneConfig'
-import { getRoomWallColliders, getConnectionCorridorColliders } from '../map-generation/mapCollision'
-import { FIXED_PROTOTYPE_MAP } from '../map-generation/mapSceneUtils'
+import {
+  getRoomWallColliders,
+  getConnectionCorridorColliders,
+  FIXED_PROTOTYPE_MAP,
+} from '../map-generation'
 import { useWorldStateStore } from '../world-state/worldStateStore'
 import { COLLISION_CONFIG } from './collisionConfig'
 import type { CircleCollider, RectCollider, StaticCollider } from './collisionTypes'

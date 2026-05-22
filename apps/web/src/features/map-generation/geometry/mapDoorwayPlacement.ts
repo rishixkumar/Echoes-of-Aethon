@@ -1,4 +1,4 @@
-import type { DoorwayDefinition, PlacedRoom, RoomTemplate } from './mapTypes'
+import type { DoorwayDefinition, PlacedRoom, RoomTemplate } from '../data/mapTypes'
 
 /** Outer X of an east/west wall skin in world space (room-local alignment, no rotation yet). */
 export function getOuterWallX(

@@ -1,6 +1,8 @@
 import { ROOM_TEMPLATES } from './roomTemplates'
 import type { MapDefinition } from './mapTypes'
 import { assertValidMapDefinition } from './validateMapDefinition'
+import { buildRoomGraph, describeRoomGraph } from '../graph/roomGraph'
+import { validateRoomGraph } from '../graph/validateRoomGraph'
 
 export function generateFixedPrototypeMap(): MapDefinition {
   const map: MapDefinition = {
@@ -45,5 +47,20 @@ export function generateFixedPrototypeMap(): MapDefinition {
   }
 
   assertValidMapDefinition(map)
+
+  if (import.meta.env.DEV) {
+    const graphResult = validateRoomGraph(map)
+
+    if (!graphResult.valid) {
+      console.error('Room graph validation failed:', graphResult.errors)
+    }
+
+    if (graphResult.warnings.length > 0) {
+      console.warn('Room graph validation warnings:', graphResult.warnings)
+    }
+
+    console.info('[room-graph]\n' + describeRoomGraph(buildRoomGraph(map)))
+  }
+
   return map
 }

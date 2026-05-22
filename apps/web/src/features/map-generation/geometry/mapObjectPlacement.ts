@@ -1,4 +1,4 @@
-import type { PlacedRoom } from './mapTypes'
+import type { PlacedRoom } from '../data/mapTypes'
 
 /**
  * Room-local → world translation. Rotation on `PlacedRoom.rotationY` reserved for later maps.

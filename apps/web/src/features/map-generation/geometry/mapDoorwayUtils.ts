@@ -1,4 +1,4 @@
-import type { Direction, DoorwayDefinition } from './mapTypes'
+import type { Direction, DoorwayDefinition } from '../data/mapTypes'
 
 export function getDoorwayForDirection(
   doorways: readonly DoorwayDefinition[],

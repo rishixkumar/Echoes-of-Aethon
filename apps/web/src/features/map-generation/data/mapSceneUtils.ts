@@ -1,5 +1,5 @@
 import { generateFixedPrototypeMap } from './generateFixedMap'
-import { localToWorldPosition } from './mapObjectPlacement'
+import { localToWorldPosition } from '../geometry/mapObjectPlacement'
 import type {
   MapDefinition,
   PlacedRoom,

@@ -1,4 +1,4 @@
-import type { ConnectionCorridor } from './mapRoomConnectors'
+import type { ConnectionCorridor } from '../geometry/mapRoomConnectors'
 
 type GeneratedConnectionBridgeProps = Readonly<{
   corridor: ConnectionCorridor

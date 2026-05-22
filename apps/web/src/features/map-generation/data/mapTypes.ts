@@ -1,4 +1,4 @@
-import type { RectCollider } from '../collision/collisionTypes'
+import type { RectCollider } from '../../collision/collisionTypes'
 
 export type Direction = 'north' | 'south' | 'east' | 'west'
 

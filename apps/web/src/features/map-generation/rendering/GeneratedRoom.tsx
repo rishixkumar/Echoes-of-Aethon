@@ -1,8 +1,8 @@
-import { getEffectiveDoorwaysForRoom } from './mapConnections'
-import { buildWallSlabsForRoom } from './mapRoomWallSlabs'
-import type { DoorwayDefinition, MapDefinition, PlacedRoom, RoomTemplate } from './mapTypes'
+import { getEffectiveDoorwaysForRoom } from '../data/mapConnections'
+import { buildWallSlabsForRoom } from '../geometry/mapRoomWallSlabs'
+import type { DoorwayDefinition, MapDefinition, PlacedRoom, RoomTemplate } from '../data/mapTypes'
 import { GeneratedDoorway } from './GeneratedDoorway'
-import { localToWorldPosition } from './mapObjectPlacement'
+import { localToWorldPosition } from '../geometry/mapObjectPlacement'
 
 export type GeneratedRoomProps = Readonly<{
   map: MapDefinition

@@ -1,7 +1,7 @@
 import {
   FIXED_PROTOTYPE_MAP,
   getWorldObjectPosition,
-} from '../map-generation/mapSceneUtils'
+} from '../map-generation'
 
 export type InteractableRole = 'objective-orb' | 'echo-orb' | 'lore-object'
 

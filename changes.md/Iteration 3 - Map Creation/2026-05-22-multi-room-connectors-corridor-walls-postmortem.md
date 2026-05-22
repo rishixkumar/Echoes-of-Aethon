@@ -217,18 +217,18 @@ Then `getRoomWallColliders` / `getConnectionCorridorColliders` return types alig
 
 | File | Role |
 |------|------|
-| `apps/web/src/features/map-generation/mapWallGeometry.ts` | `wallFromBounds` — **geometry only**, no list keys. |
-| `apps/web/src/features/map-generation/mapRoomWallSlabs.ts` | Wall slabs from template + **effective** doorways. |
-| `apps/web/src/features/map-generation/mapConnections.ts` | `getEffectiveDoorwaysForRoom` — connections + template merge. |
-| `apps/web/src/features/map-generation/roomAdjacency.ts` | Adjacency index for a room id. |
-| `apps/web/src/features/map-generation/mapRoomConnectors.ts` | **Corridors** between connected rooms (floor + side walls). |
-| `apps/web/src/features/map-generation/GeneratedRoom.tsx` | Room floor + wall meshes; **`key={key}`** on slabs. |
-| `apps/web/src/features/map-generation/GeneratedConnectionBridge.tsx` | Corridor floor + barrier meshes. |
-| `apps/web/src/features/map-generation/GeneratedMap.tsx` | Rooms + corridors. |
-| `apps/web/src/features/map-generation/mapCollision.ts` | `getRoomWallColliders`, `getConnectionCorridorColliders`. |
-| `apps/web/src/features/map-generation/mapTypes.ts` | `GeneratedMapCollider` as **rect + metadata**. |
+| `apps/web/src/features/map-generation/geometry/mapWallGeometry.ts` | `wallFromBounds` — **geometry only**, no list keys. |
+| `apps/web/src/features/map-generation/geometry/mapRoomWallSlabs.ts` | Wall slabs from template + **effective** doorways. |
+| `apps/web/src/features/map-generation/data/mapConnections.ts` | `getEffectiveDoorwaysForRoom` — connections + template merge. |
+| `apps/web/src/features/map-generation/graph/roomAdjacency.ts` | Adjacency via `buildRoomGraph` (per-room exits). |
+| `apps/web/src/features/map-generation/geometry/mapRoomConnectors.ts` | **Corridors** between connected rooms (floor + side walls). |
+| `apps/web/src/features/map-generation/rendering/GeneratedRoom.tsx` | Room floor + wall meshes; **`key={key}`** on slabs. |
+| `apps/web/src/features/map-generation/rendering/GeneratedConnectionBridge.tsx` | Corridor floor + barrier meshes. |
+| `apps/web/src/features/map-generation/rendering/GeneratedMap.tsx` | Rooms + corridors. |
+| `apps/web/src/features/map-generation/collision/mapCollision.ts` | `getRoomWallColliders`, `getConnectionCorridorColliders`. |
+| `apps/web/src/features/map-generation/data/mapTypes.ts` | `GeneratedMapCollider` as **rect + metadata**. |
 | `apps/web/src/features/collision/staticColliders.ts` | Composes room + corridor **rects** for player / camera. |
-| `apps/web/src/features/map-generation/generateFixedMap.ts` | Fixed three-room layout + connections. |
+| `apps/web/src/features/map-generation/data/generateFixedMap.ts` | Fixed three-room layout + connections. |
 
 ---
 

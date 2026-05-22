@@ -4,11 +4,11 @@
  */
 import {
   FIXED_PROTOTYPE_MAP,
+  getMapBounds,
   getPlayerStartWorld,
   getWorldObjectByType,
   getWorldObjectPosition,
-} from '../features/map-generation/mapSceneUtils'
-import { getMapBounds } from '../features/map-generation/mapBounds'
+} from '../features/map-generation'
 
 const OBJECTIVE_ROOM_ID = 'room-objective'
 

@@ -1,5 +1,5 @@
 /**
- * Shared axis-aligned wall slab math for {@link GeneratedRoom} and future {@link mapCollision}.
+ * Shared axis-aligned wall slab math for {@link ../rendering/GeneratedRoom} and collision.
  * North = −Z, south = +Z, east = +X, west = −X.
  */
 

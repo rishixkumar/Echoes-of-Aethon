@@ -1,5 +1,5 @@
 import { MAP_CONFIG } from './mapConfig'
-import { getRoomAdjacency } from './roomAdjacency'
+import { getRoomAdjacency } from '../graph/roomAdjacency'
 import type {
   Direction,
   DoorwayDefinition,
@@ -7,13 +7,7 @@ import type {
   PlacedRoom,
   RoomTemplate,
 } from './mapTypes'
-
-export const OPPOSITE_DIRECTION: Record<Direction, Direction> = {
-  north: 'south',
-  south: 'north',
-  east: 'west',
-  west: 'east',
-}
+import { OPPOSITE_DIRECTION } from '../graph/roomGraph'
 
 export function oppositeDirection(direction: Direction): Direction {
   return OPPOSITE_DIRECTION[direction]

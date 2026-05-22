@@ -1,5 +1,5 @@
-import { OPPOSITE_DIRECTION } from './mapConnections'
-import { getRoomAdjacency } from './roomAdjacency'
+import { OPPOSITE_DIRECTION } from '../graph/roomGraph'
+import { getRoomAdjacency } from '../graph/roomAdjacency'
 import type { MapDefinition } from './mapTypes'
 
 export type MapValidationResult = {
