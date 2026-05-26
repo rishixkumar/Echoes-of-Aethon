@@ -15,6 +15,8 @@ This directory stores **human-readable records of structural and tooling changes
 
 ## Latest entry
 
+Iteration — **Shell UI & Accessibility (main menu, pause, credits, prefs):** **[`Iteration-ShellUI-A11y/shell-ui-a11y-20260523.md`](Iteration-ShellUI-A11y/shell-ui-a11y-20260523.md)**.
+
 Iteration — **Layered mist / fog stack (post-mortem + atlas):** **[`Iteration-Mist/layered-mist-stack-postmortem-20260522.md`](Iteration-Mist/layered-mist-stack-postmortem-20260522.md)** · HTML atlas: **[`Iteration-Mist/mist-iteration-atlas.html`](Iteration-Mist/mist-iteration-atlas.html)**.
 
 Iteration 3 — **Prototype room wall-gap postmortem:** **[`Iteration 3 - Map Creation/prototypeRoomWallGapPostmortem-20260522.md`](Iteration%203%20-%20Map%20Creation/prototypeRoomWallGapPostmortem-20260522.md)**.

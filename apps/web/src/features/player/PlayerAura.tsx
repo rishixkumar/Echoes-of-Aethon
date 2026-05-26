@@ -1,30 +1,125 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
-import { PointLight } from 'three'
+import { MathUtils, PointLight } from 'three'
+import { PLAYER_AURA_CONFIG } from './playerAuraConfig'
 
-const CORE_BASE = 3.2
-const FILL_BASE = 0.9
+function randomRange(min: number, max: number): number {
+  return min + Math.random() * (max - min)
+}
+
+type SurgeState = {
+  active: boolean
+  startedAt: number
+  duration: number
+  multiplier: number
+}
 
 /**
- * Lantern lights — warm core + pink fantasy fill.
- * The fill radiates enough to scatter off nearby fog but doesn't illuminate the whole map.
+ * Lantern lights — warm core + pink fill, with smooth wave flicker and rare surges.
  */
 export function PlayerAura() {
   const coreLightRef = useRef<PointLight>(null)
   const fillLightRef = useRef<PointLight>(null)
 
-  useFrame(({ clock }) => {
-    const flicker =
-      1 +
-      Math.sin(clock.elapsedTime * 9) * 0.06 +
-      Math.sin(clock.elapsedTime * 17) * 0.03
+  const currentDistanceMultiplier = useRef(1)
+  const currentIntensityMultiplier = useRef(1)
+  const surgeRef = useRef<SurgeState>({
+    active: false,
+    startedAt: 0,
+    duration: 0,
+    multiplier: 1,
+  })
 
-    if (coreLightRef.current) {
-      coreLightRef.current.intensity = CORE_BASE * flicker
+  const cfg = PLAYER_AURA_CONFIG
+  const flick = cfg.flicker
+
+  useFrame(({ clock }, delta) => {
+    const core = coreLightRef.current
+    const fill = fillLightRef.current
+    if (!core || !fill) return
+
+    const time = clock.elapsedTime
+    const dt = delta
+
+    if (!flick.enabled) {
+      core.intensity = cfg.coreLight.baseIntensity
+      core.distance = cfg.coreLight.baseDistance
+      fill.intensity = cfg.fillLight.baseIntensity
+      fill.distance = cfg.fillLight.baseDistance
+      return
     }
-    if (fillLightRef.current) {
-      fillLightRef.current.intensity = FILL_BASE * flicker
+
+    if (!surgeRef.current.active) {
+      const chanceThisFrame = flick.surgeChancePerSecond * dt
+      if (Math.random() < chanceThisFrame) {
+        surgeRef.current = {
+          active: true,
+          startedAt: time,
+          duration: randomRange(flick.surgeDurationMin, flick.surgeDurationMax),
+          multiplier: randomRange(
+            flick.surgeDistanceMultiplierMin,
+            flick.surgeDistanceMultiplierMax,
+          ),
+        }
+      }
     }
+
+    let surgeMultiplier = 1
+    if (surgeRef.current.active) {
+      const t = (time - surgeRef.current.startedAt) / surgeRef.current.duration
+      if (t >= 1) {
+        surgeRef.current.active = false
+      } else {
+        const pulse = Math.sin(Math.PI * t)
+        surgeMultiplier = 1 + (surgeRef.current.multiplier - 1) * pulse
+      }
+    }
+
+    const wave =
+      0.5 +
+      0.26 * Math.sin(time * flick.slowWaveSpeed) +
+      0.16 * Math.sin(time * flick.mediumWaveSpeed + 1.7) +
+      0.08 * Math.sin(time * flick.fastWaveSpeed + 4.1)
+
+    const clampedWave = MathUtils.clamp(wave, 0, 1)
+
+    const normalDistanceMultiplier = MathUtils.lerp(
+      flick.normalDistanceMultiplierMin,
+      flick.normalDistanceMultiplierMax,
+      clampedWave,
+    )
+
+    const targetDistanceMultiplier = normalDistanceMultiplier * surgeMultiplier
+
+    const targetIntensityMultiplier = MathUtils.lerp(
+      flick.intensityMultiplierMin,
+      flick.intensityMultiplierMax,
+      clampedWave,
+    )
+
+    const alpha = 1 - Math.exp(-flick.smoothing * dt)
+
+    currentDistanceMultiplier.current = MathUtils.lerp(
+      currentDistanceMultiplier.current,
+      targetDistanceMultiplier,
+      alpha,
+    )
+
+    currentIntensityMultiplier.current = MathUtils.lerp(
+      currentIntensityMultiplier.current,
+      targetIntensityMultiplier,
+      alpha,
+    )
+
+    core.distance =
+      cfg.coreLight.baseDistance * currentDistanceMultiplier.current
+    core.intensity =
+      cfg.coreLight.baseIntensity * currentIntensityMultiplier.current
+
+    fill.distance =
+      cfg.fillLight.baseDistance * currentDistanceMultiplier.current
+    fill.intensity =
+      cfg.fillLight.baseIntensity * currentIntensityMultiplier.current
   })
 
   return (
@@ -32,18 +127,18 @@ export function PlayerAura() {
       <pointLight
         ref={coreLightRef}
         position={[0, 1.15, 0]}
-        color="#ffd2ad"
-        intensity={CORE_BASE}
-        distance={5.8}
-        decay={1.5}
+        color={cfg.coreLight.color}
+        intensity={cfg.coreLight.baseIntensity}
+        distance={cfg.coreLight.baseDistance}
+        decay={cfg.coreLight.decay}
       />
       <pointLight
         ref={fillLightRef}
         position={[0, 0.45, 0]}
-        color="#ff6abd"
-        intensity={FILL_BASE}
-        distance={9}
-        decay={1.7}
+        color={cfg.fillLight.color}
+        intensity={cfg.fillLight.baseIntensity}
+        distance={cfg.fillLight.baseDistance}
+        decay={cfg.fillLight.decay}
       />
       <mesh position={[0.38, 0.95, 0.25]}>
         <sphereGeometry args={[0.09, 16, 16]} />

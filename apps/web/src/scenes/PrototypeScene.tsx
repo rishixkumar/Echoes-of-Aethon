@@ -6,6 +6,8 @@ import { ExitZone } from '../features/world-objects/ExitZone'
 import { GeneratedMap, FIXED_PROTOTYPE_MAP } from '../features/map-generation'
 import { Atmosphere } from '../rendering/Atmosphere'
 import { SkyFogDome } from '../rendering/SkyFogDome'
+import { CelestialBodies } from '../rendering/sky/CelestialBodies'
+import { SkyCloudLayer } from '../rendering/sky/SkyCloudLayer'
 import { CLOUD_FOG_CONFIG } from '../rendering/mist/cloudFogConfig'
 import { CloudFogVolume } from '../rendering/mist/CloudFogVolume'
 import { GROUND_FOG_CONFIG } from '../rendering/mist/groundFogConfig'
@@ -33,6 +35,8 @@ export function PrototypeScene() {
     <>
       <Atmosphere />
       <SkyFogDome mapBounds={mapBounds} />
+      <CelestialBodies mapBounds={mapBounds} />
+      <SkyCloudLayer mapBounds={mapBounds} />
 
       <directionalLight
         castShadow
