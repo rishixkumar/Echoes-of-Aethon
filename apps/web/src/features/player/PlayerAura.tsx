@@ -49,6 +49,7 @@ export function PlayerAura() {
       return
     }
 
+    // Random surge trigger
     if (!surgeRef.current.active) {
       const chanceThisFrame = flick.surgeChancePerSecond * dt
       if (Math.random() < chanceThisFrame) {
@@ -89,7 +90,8 @@ export function PlayerAura() {
       clampedWave,
     )
 
-    const targetDistanceMultiplier = normalDistanceMultiplier * surgeMultiplier
+    const targetDistanceMultiplier =
+      normalDistanceMultiplier * surgeMultiplier
 
     const targetIntensityMultiplier = MathUtils.lerp(
       flick.intensityMultiplierMin,

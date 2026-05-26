@@ -28,6 +28,7 @@ function buildMoonClusterItems(count: number) {
 export const CELESTIAL_BODIES_CONFIG = {
   enabled: true,
 
+  /** Billboard plane edge length; originals were 18 / 11 / 9 — kept at 5× for readability. */
   suns: [
     {
       id: 'hazy-sun-primary',

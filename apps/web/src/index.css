@@ -54,13 +54,44 @@ body {
   color: #d4eefc;
 }
 
-.worldLabel--player {
-  padding: 2px 7px;
-  border-radius: 4px;
+.player-label {
+  color: rgba(245, 230, 255, 0.88);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
   font-size: 9px;
-  background: rgba(18, 28, 48, 0.82);
-  border: 1px solid rgba(160, 200, 255, 0.32);
-  color: #c8dcff;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  text-shadow:
+    0 0 5px rgba(255, 170, 235, 0.36),
+    0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.debug-toggle {
+  margin-top: 10px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(210, 160, 255, 0.22);
+  background: rgba(10, 4, 14, 0.35);
+  color: rgba(235, 220, 255, 0.86);
+  font-size: 12px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.debug-toggle:hover {
+  background: rgba(24, 12, 32, 0.55);
+}
+
+.debug-metrics {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(210, 190, 255, 0.86);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .player-label {
