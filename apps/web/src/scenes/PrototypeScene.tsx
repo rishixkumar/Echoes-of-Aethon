@@ -7,8 +7,6 @@ import { GeneratedMap, FIXED_PROTOTYPE_MAP } from '../features/map-generation'
 import { Atmosphere } from '../rendering/Atmosphere'
 import { SkyFogDome } from '../rendering/SkyFogDome'
 import { CelestialBodies } from '../rendering/sky/CelestialBodies'
-import { CELESTIAL_BODIES_CONFIG } from '../rendering/sky/celestialBodiesConfig'
-import { SKY_CLOUD_CONFIG } from '../rendering/sky/skyCloudConfig'
 import { SkyCloudLayer } from '../rendering/sky/SkyCloudLayer'
 import { CLOUD_FOG_CONFIG } from '../rendering/mist/cloudFogConfig'
 import { CloudFogVolume } from '../rendering/mist/CloudFogVolume'
@@ -37,12 +35,8 @@ export function PrototypeScene() {
     <>
       <Atmosphere />
       <SkyFogDome mapBounds={mapBounds} />
-      {CELESTIAL_BODIES_CONFIG.enabled ? (
-        <CelestialBodies mapBounds={mapBounds} />
-      ) : null}
-      {SKY_CLOUD_CONFIG.enabled ? (
-        <SkyCloudLayer mapBounds={mapBounds} />
-      ) : null}
+      <CelestialBodies mapBounds={mapBounds} />
+      <SkyCloudLayer mapBounds={mapBounds} />
 
       <directionalLight
         castShadow

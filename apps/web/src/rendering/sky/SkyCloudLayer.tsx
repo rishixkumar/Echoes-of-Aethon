@@ -173,6 +173,7 @@ function createCloudMaterial(cloud: CloudItem): ShaderMaterial {
 export function SkyCloudLayer({ mapBounds }: SkyCloudLayerProps) {
   const clouds = useMemo(
     () => buildClouds(mapBounds),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [mapBounds.minX, mapBounds.maxX, mapBounds.minZ, mapBounds.maxZ],
   )
 

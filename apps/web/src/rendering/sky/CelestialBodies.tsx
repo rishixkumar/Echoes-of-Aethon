@@ -14,7 +14,7 @@ type CelestialBodiesProps = Readonly<{
   mapBounds: MapBoundsXZ
 }>
 
-export function polarSkyPosition({
+function polarSkyPosition({
   centerX,
   centerZ,
   angle,
@@ -150,9 +150,7 @@ export function CelestialBodies({ mapBounds }: CelestialBodiesProps) {
         <Billboard follow>
           <group renderOrder={-88}>
             <mesh>
-              <sphereGeometry
-                args={[cfg.saturn.planetRadius, 32, 16]}
-              />
+              <sphereGeometry args={[cfg.saturn.planetRadius, 32, 16]} />
               <meshStandardMaterial
                 color={cfg.saturn.color}
                 emissive={cfg.saturn.emissive}

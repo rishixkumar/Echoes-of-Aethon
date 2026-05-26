@@ -9,6 +9,7 @@ import { xzOverlapsAnyStaticCollider } from '../collision/staticColliders'
 import { PLAYER_MOVEMENT_CONFIG } from './playerMovementConfig'
 import { usePlayerStore } from './playerStore'
 import { useKeyboardMovement } from './useKeyboardMovement'
+import { useAppShellStore } from '../ui/appShellStore'
 
 type PlayerControllerProps = Readonly<{
   /** Optional spawn on the XZ plane (feet at y = 0). */
@@ -25,6 +26,7 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
   const bodyRef = useRef<Mesh>(null)
   const [playerLabelVisible, setPlayerLabelVisible] = useState(true)
   const prevBodyVisible = useRef(true)
+  const screen = useAppShellStore((s) => s.screen)
 
   const velocity = useRef(new Vector3())
   const scratch = useMemo(
@@ -126,7 +128,7 @@ export function PlayerController({ spawn }: PlayerControllerProps) {
         text="Player"
         variant="player"
         position={[0, 1.65, 0]}
-        visible={playerLabelVisible}
+        visible={playerLabelVisible && screen === 'playing'}
       />
     </group>
   )
